@@ -9,6 +9,7 @@ import * as jose from 'jose'
 
 export async function POST(request: NextRequest) {
     try {
+        console.log('eerrr');
         await connect()
         const body: ISignInSchema = await request.json()
         let result = signInSchema.safeParse(body)
