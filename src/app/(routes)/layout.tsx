@@ -88,7 +88,7 @@ export default function RootLayout({
                     <Loader height='h-8' width='w-8' />
                 </div>
             }
-            <div className={`${open ? 'left-0' : '-left-[250px]'}  lg:left-0 absolute lg:relative transition-all z-40 w-[250px] pt-5 shrink-0 flex flex-col min-h-screen bg-primary overflow-auto`}>
+            <div className={`${open ? 'left-0' : '-left-[250px]'} rounded-r-[40px] lg:left-0 absolute lg:relative transition-all z-40 w-[250px] pt-5 shrink-0 flex flex-col min-h-screen bg-primary overflow-auto`}>
                 <div className="absolute top-5 right-5 block lg:hidden" onClick={() => setOpen(false)}>
                     <RxCross1 className="text-white text-lg font-bold cursor-pointer" />
                 </div>
@@ -124,7 +124,7 @@ export default function RootLayout({
                 <div className='w-full flex items-center justify-between py-5 px-5 sm:px-10 border-b'>
                     <div className="flex gap-5 items-center">
                         <IoIosMenu className="block lg:hidden cursor-pointer text-2xl text-zinc-800" onClick={() => setOpen(true)} />
-                        <h1 className='text-base sm:text-2xl font-bold text-zinc-800'>RAJAY CROSSING</h1>
+                        <h1 className='text-base sm:text-2xl font-bold text-zinc-800'>Chedgi Xing</h1>
                     </div>
                     <DropdownMenu>
                         <DropdownMenuTrigger className='text-xl font-bold w-[35px] h-[35px] flex justify-center items-center rounded-full uppercase bg-orange-400'>

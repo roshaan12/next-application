@@ -8,6 +8,19 @@
     /* This applies the 'lg:w-auto' part */
 }
 
+
+.bg-primary{
+    background-color: #85632E;
+    transition: all 0.3s ease-in-out;
+}
+button.bg-primary{
+    border: 1px solid #85632E;
+}
+button.bg-primary:hover{
+  background: #FFFFFF;
+  color: #85632E;
+
+}
 /* Media query for large screens as per Tailwind's default breakpoint for 'lg' */
 @media (min-width: 1024px) {
     .custom_width {

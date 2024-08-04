@@ -223,7 +223,7 @@ function TokenData() {
                                         <div className='flex flex-col items-center'>
                                             <div className='w-full hidden print:flex mb-8 justify-between items-center'>
                                                 <Image src={'/logo.png'} alt='logo' className='w-[50px]' width={50} height={50} />
-                                                <h1 className='text-base font-bold text-zinc-800'>RAJAY CROSSING</h1>
+                                                <h1 className='text-base font-bold text-zinc-800'>Chedgi Xing</h1>
                                             </div>
                                             <div className=''>
                                                 {
