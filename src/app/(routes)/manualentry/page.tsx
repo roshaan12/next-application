@@ -122,7 +122,7 @@ function ManualEntry() {
                                     state.userDetails && (state.userDetails.role === 'super-admin' || state.userDetails.role === 'admin') &&
                                     <option value="fuelTrade">Chedgi Pedestarian Xing</option>
                                 }
-                                
+                                <option value="local">Chedgi Trade Xing</option>
                             </select>
                         </div>
                         <div className='flex flex-col gap-1'>

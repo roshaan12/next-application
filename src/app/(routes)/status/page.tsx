@@ -31,8 +31,8 @@ const Page = () => {
 
     let data = [
         { title: 'Token Data', id: 'token' },
-        { title: 'Fuel Trade Vehs', id: 'fuelTrade' },
-        { title: 'Local Residents', id: 'local' },
+        { title: 'Chedgi Pedestarian Xing', id: 'fuelTrade' },
+        { title: 'Paragkoh Fuel Xing', id: 'local' },
     ]
     const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -82,8 +82,8 @@ const Page = () => {
                         {
                             data.map((item, i) => {
                                 return (
-                                    <div key={i} className="border flex flex-col gap-7 justify-center items-center shadow-[0_0_10px_rgba(0,0,0,0.2)] bg-white rounded-[30px] p-7">
-                                        <h1 className="text-2xl font-bold text-zinc-800">{item.title}</h1>
+                                    <div key={i} className="border flex flex-col gap-7 justify-between items-center shadow-[0_0_10px_rgba(0,0,0,0.2)] bg-white rounded-[30px] p-7">
+                                        <h1 className="text-2xl font-bold text-zinc-800 text-center">{item.title}</h1>
                                         <button onClick={() => {
                                             setSelected(item.id)
                                             setFetchedData(null)
