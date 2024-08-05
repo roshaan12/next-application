@@ -82,7 +82,7 @@ const Page = () => {
                         {
                             data.map((item, i) => {
                                 return (
-                                    <div key={i} className="border flex flex-col gap-7 justify-center items-center shadow-[0_0_10px_rgba(0,0,0,0.2)] rounded-lg p-7">
+                                    <div key={i} className="border flex flex-col gap-7 justify-center items-center shadow-[0_0_10px_rgba(0,0,0,0.2)] bg-white rounded-[30px] p-7">
                                         <h1 className="text-2xl font-bold text-zinc-800">{item.title}</h1>
                                         <button onClick={() => {
                                             setSelected(item.id)
