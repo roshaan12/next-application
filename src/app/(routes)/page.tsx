@@ -30,6 +30,7 @@ const Page = () => {
       { id: 'stats', title: 'DAILY STATE', icon: <ImStatsBars className="text-[60px] text-zinc-800" /> },
       { id: 'fuelTrade', title: 'UPLOAD EXCEL NOBAT LIST', icon: <SiMicrosoftexcel className="text-[60px] text-zinc-800" /> },
       { id: 'local', title: 'UPLOAD EXCEL LOCAL RESIDENTS', icon: <SiMicrosoftexcel className="text-[60px] text-zinc-800" /> },
+      { id: 'tradeXing', title: 'UPLOAD EXCEL TRADE XING', icon: <SiMicrosoftexcel className="text-[60px] text-zinc-800" /> },
       // { title: 'COMPARISON OLD NOBATS', icon: <MdOutlineCompareArrows className="text-[60px] text-zinc-800" /> },
     ]
   }
@@ -68,36 +69,22 @@ const Page = () => {
 
 
   function ReadExcelFile(e: any) {
-    const file = e.target.files[0];
+  const file = e.target.files[0];
 
-    if (file) {
-      const fileType = file.type;
-      const allowedTypes = [
-        'application/vnd.ms-excel', // for .xls
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' // for .xlsx
-      ];
-      if (allowedTypes.includes(fileType)) {
-        readXlsxFile(file).then((rows) => {
-          setSelectedFile(file.name)
-          setSelectedFileData(rows.slice(1))
-        }).catch((error) => {
-          toast.error(`'Error reading the Excel file:', ${error}`, {
-            duration: 4000,
-            position: window.matchMedia("(min-width: 600px)").matches ? "bottom-right" : "bottom-center",
-
-            style: {
-              backgroundColor: '#d9d9d9',
-              padding: window.matchMedia("(min-width: 600px)").matches ? "20px 30px" : "15px 20px",
-              fontSize: '14px',
-              fontWeight: 'bold'
-            },
-          });
-        });
-      } else {
-        toast.error('Invalid file type. Please upload an Excel file', {
+  if (file) {
+    const fileType = file.type;
+    const allowedTypes = [
+      'application/vnd.ms-excel', // for .xls
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' // for .xlsx
+    ];
+    if (allowedTypes.includes(fileType)) {
+      readXlsxFile(file).then((rows) => {
+        setSelectedFile(file.name)
+        setSelectedFileData(rows.slice(1))
+      }).catch((error) => {
+        toast.error(`Error reading the Excel file: ${error}`, {
           duration: 4000,
           position: window.matchMedia("(min-width: 600px)").matches ? "bottom-right" : "bottom-center",
-
           style: {
             backgroundColor: '#d9d9d9',
             padding: window.matchMedia("(min-width: 600px)").matches ? "20px 30px" : "15px 20px",
@@ -105,11 +92,24 @@ const Page = () => {
             fontWeight: 'bold'
           },
         });
-      }
+      });
     } else {
-      console.error('No file selected.');
+      toast.error('Invalid file type. Please upload an Excel file', {
+        duration: 4000,
+        position: window.matchMedia("(min-width: 600px)").matches ? "bottom-right" : "bottom-center",
+        style: {
+          backgroundColor: '#d9d9d9',
+          padding: window.matchMedia("(min-width: 600px)").matches ? "20px 30px" : "15px 20px",
+          fontSize: '14px',
+          fontWeight: 'bold'
+        },
+      });
     }
+  } else {
+    console.error('No file selected.');
   }
+}
+
 
 
   async function onSubmit(data: any) {
@@ -238,6 +238,8 @@ const Page = () => {
       });
       return
     }
+
+    
     let data = selectedFileData.map((item: any) => {
       return {
         type: type,
@@ -259,6 +261,59 @@ const Page = () => {
     onSubmit(data)
   }
 
+
+
+  const AddTradeXingData = () => {
+    if (!selectedFile || !selectedFileData.length) {
+      toast.error('Please select a file', {
+        duration: 4000,
+        position: window.matchMedia("(min-width: 600px)").matches ? "bottom-right" : "bottom-center",
+        style: {
+          backgroundColor: '#d9d9d9',
+          padding: window.matchMedia("(min-width: 600px)").matches ? "20px 30px" : "15px 20px",
+          fontSize: '14px',
+          fontWeight: 'bold'
+        },
+      });
+      return;
+    }
+    if (selectedFileData[0].length !== 11) {
+      toast.error('Invalid data format', {
+        duration: 4000,
+        position: window.matchMedia("(min-width: 600px)").matches ? "bottom-right" : "bottom-center",
+        style: {
+          backgroundColor: '#d9d9d9',
+          padding: window.matchMedia("(min-width: 600px)").matches ? "20px 30px" : "15px 20px",
+          fontSize: '14px',
+          fontWeight: 'bold'
+        },
+      });
+      return;
+    }
+    
+     
+    let data = selectedFileData.map((item : any) => {
+      return {
+          type: type,
+          driverName: item[0],
+          fName: item[1],
+          cnic: item[2],
+          residenceOf: item[3],
+          vehNo: item[4],
+          typeOfVeh: item[5],
+
+          nameOfCoy: item[6],
+          item: item[7],
+          loadInNos: item[8],
+          loadInTns: item[9],
+
+          remarks: item[10]
+      };
+  });
+  onSubmit(data);
+};
+  
+
   return (
     <div className="mt-10">
       <Toaster />
@@ -279,13 +334,13 @@ const Page = () => {
                   :
                   <div className="w-full lg:w-[70%]">
                     <BarChart
-                      data={[fetchedData.tokens, fetchedData.paktoiranlocal, fetchedData.irantopaklocal, fetchedData.paktoiranofficial, fetchedData.irantopakofficial]}
+                      data={[fetchedData.tokens, fetchedData.paktoiranofficial, fetchedData.irantopakofficial, fetchedData.paktoiranlocal, fetchedData.irantopaklocal]}
                       labels={[
                         'Token Issued',
-                        'Residents Pak to Iran',
-                        'Residents Iran to Pak',
                         'Fuel Veh Pak to Iran',
-                        'Fuel Veh Iran to Pak'
+                        'Fuel Veh Iran to Pak',
+                        'Pedestrian Pak to Iran',
+                        'Pedestrian Iran to Pak',
                       ]}
                     />
                   </div>
@@ -330,25 +385,25 @@ const Page = () => {
               </div>
               :
               active === 4 ?
+              <div>
+              <h1 className='text-2xl font-bold text-zinc-800'>UPLOAD EXCEL TRADE XING</h1>
+              <div className="mt-10">
                 <div>
-                  <h1 className='text-2xl font-bold text-zinc-800'>COMPILED NOBAT LIST</h1>
-                  <div className="mt-10">
-                    <div>
-                      <label htmlFor="file" className="w-[300px] h-[70px] text-zinc-800 font-bold border-2 border-dashed rounded-2xl bg-zinc-100 flex justify-center items-center">
-                        Browse File
-                      </label>
-                      <input type="file" id="file" hidden />
-                      <p className="mt-2">No file selected</p>
-                    </div>
-                    <button className="py-3 px-10 mt-5 rounded-lg bg-primary text-white">Submit</button>
-                  </div>
+                  <label htmlFor="file" className="w-[300px] h-[70px] text-zinc-800 font-bold border-2 border-dashed rounded-2xl bg-zinc-100 flex justify-center items-center">
+                    Browse File
+                  </label>
+                  <input onChange={ReadExcelFile} type="file" id="file" hidden />
+                  <p className="mt-2">{selectedFile ? selectedFile : 'No file selected'} </p>
                 </div>
+                <button disabled={addBulkLoading} onClick={AddTradeXingData} className="py-3 w-[120px] mt-5 rounded-lg bg-primary text-white">{addBulkLoading ? <Loader height="h-4" width="w-4" /> : 'Submit'}</button>
+              </div>
+            </div>
                 :
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 justify-between gap-10">
                   {
                     data.map((item, i) => {
                       return (
-                        <div key={i} className="border flex flex-col gap-5 justify-center items-center shadow-[0_0_10px_rgba(0,0,0,0.2)] rounded-[30px] p-7 bg-white">
+                        <div key={i} className="border flex flex-col gap-5 justify-center items-center shadow-[0_0_10px_rgba(0,0,0,0.2)] rounded-[30px] p-7 bg-white check">
                           <span>{item.icon}</span>
                           <button onClick={() => {
                             setActive(i + 1)

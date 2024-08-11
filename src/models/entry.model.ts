@@ -26,6 +26,20 @@ const entrySchema = new mongoose.Schema({
     engineNumber: String,
     regnNo: String,
     destination:String,
+
+        // Fields specific to 'tradeXing' type
+        residenceOf: String,
+        vehNo: String,
+        typeOfVeh: String,
+        entryDate: String,
+        entryTime: String,
+        nameOfCoy: String,
+        item: String,
+        loadInNos: String,
+        loadInTns: String,
+        returnDate: String,
+        returnTime: String,
+        remarks: String,
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
 }, { timestamps: true });
 

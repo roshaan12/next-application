@@ -57,6 +57,20 @@ export async function POST(request: NextRequest) {
                 destination: body.destination
             }
         }
+        else if (body.type === 'tradeXing') {
+            data = {
+                ...data,
+                driverName: body.driverName,
+                residenceOf: body.residenceOf,
+                vehNo: body.vehNo,
+                typeOfVeh: body.typeOfVeh,
+                nameOfCoy: body.nameOfCoy,
+                item: body.item,
+                loadInNos: body.loadInNos,
+                loadInTns: body.loadInTns,
+                remarks: body.remarks,
+            };
+        }
         else {
             throw new CustomError('Invalid type', 400)
         }
@@ -103,10 +117,19 @@ export async function GET(request: NextRequest) {
                 { engineNumber: regex },
                 { regnNo: regex },
                 { destination: regex },
+    
+                { residenceOf: regex },
+                { vehNo: regex },
+                { typeOfVeh: regex },
+                { nameOfCoy: regex },
+                { item: regex },
+                { loadInNos: regex },
+                { loadInTns: regex },
+                { remarks: regex },
                 // ... add any other fields you want to search
             ]
         };
-
+        console.log("Query:", query);
         // Check if 'text' is a valid ObjectId
         if (mongoose.isValidObjectId(request.nextUrl.searchParams.get('search')!)) {
             query.$or.push({ _id: new mongoose.Types.ObjectId(request.nextUrl.searchParams.get('search')!) });

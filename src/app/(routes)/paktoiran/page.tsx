@@ -169,20 +169,18 @@ function PakToIran() {
         }
     }
     useEffect(() => {
-        if (type !== 'local' && type !== 'fuelTrade') {
+        if (type !== 'local' && type !== 'fuelTrade' && type !== 'tradeXing') { // Include tradeXing
             router.push(`/paktoiran?type=local`)
-        }
-        if ((state.userDetails && state.userDetails.role === 'user-out-local') && type === 'fuelTrade') {
+        } else if ((state.userDetails && state.userDetails.role === 'user-out-local') && (type === 'fuelTrade' || type === 'tradeXing')) {
             router.push(`/paktoiran?type=local`)
-        }
-        if ((state.userDetails && state.userDetails.role === 'user-out-fuel-trade') && type === 'local') {
+        } else if ((state.userDetails && state.userDetails.role === 'user-out-fuel-trade') && (type === 'local' || type === 'tradeXing')) {
             router.push(`/paktoiran?type=fuelTrade`)
-        }
-        else if (state.userDetails && state.userDetails.role === 'user-in-out-local' && type === 'fuelTrade') {
-            router.push(`/paktoiran?type=local`)
-        }
-        else {
-            if (state.userDetails && ((state.userDetails?.role === 'user-out-local' && type === 'local') || (state.userDetails.role === 'user-out-fuel-trade' && type === 'fuelTrade') || state.userDetails.role === 'super-admin' || state.userDetails.role === 'admin' || (state.userDetails?.role === 'user-in-out-local' && type === 'local'))) {
+        } else {
+            if (state.userDetails && ((state.userDetails?.role === 'user-out-local' && type === 'local') || 
+            (state.userDetails.role === 'user-out-fuel-trade' && type === 'fuelTrade') || 
+            (state.userDetails.role === 'user-out-trade-xing' && type === 'tradeXing') ||  // Handle tradeXing role
+            state.userDetails.role === 'super-admin' || state.userDetails.role === 'admin' || 
+            (state.userDetails?.role === 'user-in-out-local' && (type === 'local' || type === 'tradeXing')))) {
                 fetchData()
             }
         }
@@ -468,7 +466,7 @@ function PakToIran() {
                         <select value={type!} onChange={(e) => changeType(e.target.value)} className='py-2 px-4 text-sm text-zinc-800 shadow-[0_0_15px_rgba(0,0,0,0.3)] rounded-md border-2 border-zinc-500'>
                            <option value="local">Paragkoh Fuel Xing</option>
                             <option value="fuelTrade">Chedgi Pedestarian Xing</option>
-                            <option value="">Chedgi Trade Xing</option>
+                            <option value="tradeXing">Chedgi Trade Xing</option>
                         </select>
                     }
                     {
@@ -487,182 +485,265 @@ function PakToIran() {
                     null
             }
             <div className='mt-5 w-full overflow-auto'>
-                {
-                    loading ?
-                        <div className='w-full flex justify-center items-center py-20'>
-                            <Loader height='h-6' width='w-6' />
-                        </div>
-                        :
-                        !data.length ?
-                            <div className='w-full flex justify-center items-center py-20'>
-                                <h1 className='text-xl font-bold text-zinc-800'>No data found</h1>
-                            </div>
-                            :
-                            type === 'local' ?
-                                <Table className='table-auto border w-[2200px]'>
-                                    {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
-                                    <TableHeader className='bg-primary'>
-                                        <TableRow className=' grid grid-cols-[repeat(35,minmax(0,1fr))] hover:bg-inherit'>
-                                            <TableHead className="pl-2 h-auto text-white col-span-1">Ser/ID</TableHead>
-                                            <TableHead className='pl-2 h-auto text-white col-span-1'>Name / نام</TableHead>
-                                            <TableHead className="pl-2 h-auto text-white col-span-2">Father Name / والد کا نام</TableHead>
-                                            <TableHead className="pl-2 h-auto text-white col-span-2">CNIC / شناختی کارڈ</TableHead>
-                                            <TableHead className="pl-2 h-auto text-white col-span-2">Address / پتہ</TableHead>
-                                            <TableHead className="pl-2 h-auto text-white col-span-2">Veh Type / گاڑی کی قسم</TableHead>
-                                            <TableHead className="pl-2 h-auto text-white col-span-2">Date Out / جانے کی تاریخ</TableHead>
-                                            <TableHead className='pl-2 h-auto text-white col-span-2'>Time Out / جانے کا وقت</TableHead>
-                                            <TableHead className="pl-2 h-auto text-white col-span-2">Date In / آنے کی تاریخ</TableHead>
-                                            <TableHead className='pl-2 h-auto text-white col-span-2'>Time In / آنے کا وقت</TableHead>
-                                            <TableHead className="pl-2 h-auto text-white col-span-2">Guest Name / مہمان کا نام</TableHead>
-                                            <TableHead className="pl-2 h-auto text-white col-span-2">Guest CNIC / شناختی نمبر مہمان کا</TableHead>
-                                            <TableHead className="pl-2 h-auto text-white col-span-2">Guest Address / مہمان کا پتہ</TableHead>
-                                            <TableHead className='pl-2 h-auto text-white col-span-2'>Children Nos / بچوں کی تعداد</TableHead>
-                                            <TableHead className="pl-2 h-auto text-white col-span-2">Family Member Name / ھمرا کا نام</TableHead>
-                                            <TableHead className="pl-2 h-auto text-white col-span-3">Family CNIC / خاندان کا شناختی کارڈ</TableHead>
-                                            <TableHead className="pl-2 h-auto text-white col-span-1">Relation / ر شتہ</TableHead>
-                                            <TableHead className="pl-2 h-auto text-white col-span-3">Action / عمل</TableHead>
-                                        </TableRow>
+             {
+    loading ?
+        <div className='w-full flex justify-center items-center py-20'>
+            <Loader height='h-6' width='w-6' />
+        </div>
+        :
+        !data.length ?
+            <div className='w-full flex justify-center items-center py-20'>
+                <h1 className='text-xl font-bold text-zinc-800'>No data found</h1>
+            </div>
+            :
+            type === 'local' ?
+                <Table className='table-auto border w-[2200px]'>
+                    <TableHeader className='bg-primary'>
+                        <TableRow className=' grid grid-cols-[repeat(35,minmax(0,1fr))] hover:bg-inherit'>
+                            <TableHead className="pl-2 h-auto text-white col-span-1">Ser/ID</TableHead>
+                            <TableHead className='pl-2 h-auto text-white col-span-1'>Name / نام</TableHead>
+                            <TableHead className="pl-2 h-auto text-white col-span-2">Father Name / والد کا نام</TableHead>
+                            <TableHead className="pl-2 h-auto text-white col-span-2">CNIC / شناختی کارڈ</TableHead>
+                            <TableHead className="pl-2 h-auto text-white col-span-2">Address / پتہ</TableHead>
+                            <TableHead className="pl-2 h-auto text-white col-span-2">Veh Type / گاڑی کی قسم</TableHead>
+                            <TableHead className="pl-2 h-auto text-white col-span-2">Date Out / جانے کی تاریخ</TableHead>
+                            <TableHead className='pl-2 h-auto text-white col-span-2'>Time Out / جانے کا وقت</TableHead>
+                            <TableHead className="pl-2 h-auto text-white col-span-2">Date In / آنے کی تاریخ</TableHead>
+                            <TableHead className='pl-2 h-auto text-white col-span-2'>Time In / آنے کا وقت</TableHead>
+                            <TableHead className="pl-2 h-auto text-white col-span-2">Guest Name / مہمان کا نام</TableHead>
+                            <TableHead className="pl-2 h-auto text-white col-span-2">Guest CNIC / شناختی نمبر مہمان کا</TableHead>
+                            <TableHead className="pl-2 h-auto text-white col-span-2">Guest Address / مہمان کا پتہ</TableHead>
+                            <TableHead className='pl-2 h-auto text-white col-span-2'>Children Nos / بچوں کی تعداد</TableHead>
+                            <TableHead className="pl-2 h-auto text-white col-span-2">Family Member Name / ھمرا کا نام</TableHead>
+                            <TableHead className="pl-2 h-auto text-white col-span-3">Family CNIC / خاندان کا شناختی کارڈ</TableHead>
+                            <TableHead className="pl-2 h-auto text-white col-span-1">Relation / ر شتہ</TableHead>
+                            <TableHead className="pl-2 h-auto text-white col-span-3">Action / عمل</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {data.map((row: any, index) => (
+                            <TableRow key={index} className='grid grid-cols-[repeat(35,minmax(0,1fr))] hover:bg-inherit'>
+                                <TableCell className="pl-2 col-span-1 break-words flex items-center">
+                                    {
+                                        state.userDetails && state.userDetails.role === 'super-admin' &&
+                                        <input
+                                            type="checkbox"
+                                            id={row._id}
+                                            value={row._id}
+                                            checked={selectedOptions.includes(row._id)}
+                                            onChange={handleChange}
+                                            className='mr-2'
+                                        />
+                                    }
+                                    {index + 1}
+                                </TableCell>
+                                <TableCell className='pl-2 col-span-1 break-words'>{row.name}</TableCell>
+                                <TableCell className="pl-2 col-span-2 break-words">{row.fName}</TableCell>
+                                <TableCell className="pl-2 col-span-2 break-words">{row.cnic}</TableCell>
+                                <TableCell className="pl-2 col-span-2 break-words">{row.address}</TableCell>
+                                <TableCell className="pl-2 col-span-2 break-words">{row.vehsType}</TableCell>
+                                <TableCell className="pl-2 col-span-2 break-words">{row.dateTimeOut ? dayjs(row.dateTimeOut).format('DD-MM-YYYY') : '-'}</TableCell>
+                                <TableCell className='pl-2 col-span-2 break-words'>{row.dateTimeOut ? dayjs(row.dateTimeOut).format('H:mm A') : '-'}</TableCell>
+                                <TableCell className="pl-2 col-span-2 break-words">{row.dateTimeIn ? dayjs(row.dateTimeIn).format('DD-MM-YYYY') : '-'}</TableCell>
+                                <TableCell className='pl-2 col-span-2 break-words'>{row.dateTimeIn ? dayjs(row.dateTimeIn).format('H:mm A') : '-'}</TableCell>
+                                <TableCell className="pl-2 col-span-2 break-words">{row.guestName}</TableCell>
+                                <TableCell className="pl-2 col-span-2 break-words">{row.cnicOfGuest}</TableCell>
+                                <TableCell className="pl-2 col-span-2 break-words">{row.addressOfGuest}</TableCell>
+                                <TableCell className='pl-2 col-span-2 break-words'>{row.childrenNos}</TableCell>
+                                <TableCell className="pl-2 col-span-2 break-words">{row.accompanyingFamilyMembersName}</TableCell>
+                                <TableCell className="pl-2 col-span-3 break-words">{row.cnicOfFamilyMembers}</TableCell>
+                                <TableCell className="pl-2 col-span-1 break-words">{row.relation}</TableCell>
+                                <TableCell className="pl-2 col-span-3 flex flex-wrap gap-2 items-center">
+                                    {
+                                        (state.userDetails?.role === 'super-admin' || state.userDetails?.role === 'user-out-local') &&
+                                        <>
+                                            <button onClick={() => {
+                                                setCurrentEntry(row)
+                                                setOpenEdit(true)
+                                            }} className='py-1 px-2 rounded-md bg-zinc-300'>Edit</button>
+                                        </>
+                                    }
+                                    {
+                                        state.userDetails?.role === 'super-admin' &&
+                                        <button disabled={!!deleteEntryId} onClick={() => deleteEntry(row._id)} className='py-1 px-2 rounded-md bg-red-400'>{deleteEntryId === row._id ? <Loader height='h-4' width='w-4' /> : 'Delete'} </button>
+                                    }
+                                    {
+                                        state.userDetails?.role !== 'admin' &&
+                                        <button onClick={() => {
+                                            setOpenPrintToken(true)
+                                            setCurrentEntry(row)
+                                            getTokenLength()
+                                        }} className='py-1 px-2 rounded-md bg-blue-400'>Out </button>
+                                    }
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            : type === 'fuelTrade' ?
+                <Table className='table-auto border w-[2000px]'>
+                    <TableHeader className='bg-primary'>
+                        <TableRow className='grid grid-cols-[repeat(18,minmax(0,1fr))] hover:bg-inherit'>
+                            <TableHead className="pl-2 h-auto text-white col-span-1">Ser No</TableHead>
+                            <TableHead className='pl-2 h-auto text-white col-span-1'>Name / نام</TableHead>
+                            <TableHead className="pl-2 h-auto text-white col-span-1">Father Name / والد کا نام</TableHead>
+                            <TableHead className="pl-2 h-auto text-white col-span-2">CNIC / شناختی کارڈ</TableHead>
+                            <TableHead className='pl-2 h-auto text-white col-span-2'>Address / پتہ</TableHead>
+                            <TableHead className='pl-2 h-auto text-white col-span-1'>Driver Name / گاڈی چلانے والے کا نام</TableHead>
+                            <TableHead className="pl-2 h-auto text-white col-span-1">Second Seater / دوسری ثیٹر</TableHead>
+                            <TableHead className="pl-2 h-auto text-white col-span-1">Chassis Number / باڈی نمبر</TableHead>
+                            <TableHead className="pl-2 h-auto text-white col-span-1">Engine Number / انجن نامبر</TableHead>
+                            <TableHead className="pl-2 h-auto text-white col-span-1">Date Out / جانے کی تاریخ</TableHead>
+                            <TableHead className='pl-2 h-auto text-white col-span-1'>Time Out / جانے کا وقت</TableHead>
+                            <TableHead className="pl-2 h-auto text-white col-span-1">Date In / آنے کی تاریخ</TableHead>
+                            <TableHead className='pl-2 h-auto text-white col-span-1'>Time In / آنے کا وقت</TableHead>
+                            <TableHead className="pl-2 h-auto text-white col-span-1">Regn No / درج نمبر</TableHead>
+                            <TableHead className="pl-2 h-auto text-white col-span-2">Action / عمل</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {data.map((row: any, index) => (
+                            <TableRow key={index} className='grid grid-cols-[repeat(18,minmax(0,1fr))] hover:bg-inherit'>
+                                <TableCell className="pl-2 col-span-1 break-words">
+                                    {
+                                        state.userDetails && state.userDetails.role === 'super-admin' &&
+                                        <input
+                                            type="checkbox"
+                                            id={row._id}
+                                            value={row._id}
+                                            checked={selectedOptions.includes(row._id)}
+                                            onChange={handleChange}
+                                            className='mr-2'
+                                        />
+                                    }
+                                    {index + 1}
+                                </TableCell>
+                                <TableCell className='pl-2 col-span-1 break-words'>{row.name}</TableCell>
+                                <TableCell className="pl-2 col-span-1 break-words">{row.fName}</TableCell>
+                                <TableCell className="pl-2 col-span-2 break-words">{row.cnic}</TableCell>
+                                <TableCell className='pl-2 col-span-2 break-words'>{row.address}</TableCell>
+                                <TableCell className='pl-2 col-span-1 break-words'>{row.driverName}</TableCell>
+                                <TableCell className="pl-2 col-span-1 break-words">{row.secondSeater}</TableCell>
+                                <TableCell className="pl-2 col-span-1 break-words">{row.chassisNumber}</TableCell>
+                                <TableCell className="pl-2 col-span-1 break-words">{row.engineNumber}</TableCell>
+                                <TableCell className="pl-2 col-span-1 break-words">{row.dateTimeOut ? dayjs(row.dateTimeOut).format('DD-MM-YYYY') : '-'}</TableCell>
+                                <TableCell className='pl-2 col-span-1 break-words'>{row.dateTimeOut ? dayjs(row.dateTimeOut).format('H:mm A') : '-'}</TableCell>
+                                <TableCell className="pl-2 col-span-1 break-words">{row.dateTimeIn ? dayjs(row.dateTimeIn).format('DD-MM-YYYY') : '-'}</TableCell>
+                                <TableCell className='pl-2 col-span-1 break-words'>{row.dateTimeIn ? dayjs(row.dateTimeIn).format('H:mm A') : '-'}</TableCell>
+                                <TableCell className="pl-2 col-span-1 break-words">{row.regnNo}</TableCell>
+                                <TableCell className="pl-2 col-span-2 flex flex-wrap gap-2 items-center">
+                                    {
+                                        (state.userDetails?.role === 'super-admin' || state.userDetails?.role === 'user-out-fuel-trade') &&
+                                        <>
+                                            <button onClick={() => {
+                                                setCurrentEntry(row)
+                                                setOpenEdit(true)
+                                            }} className='py-1 px-2 rounded-md bg-zinc-300'>Edit</button>
+                                        </>
+                                    }
+                                    {
+                                        state.userDetails?.role === 'super-admin' &&
+                                        <button disabled={!!deleteEntryId} onClick={() => deleteEntry(row._id)} className='py-1 px-2 rounded-md bg-red-400'>{deleteEntryId === row._id ? <Loader height='h-4' width='w-4' /> : 'Delete'} </button>
+                                    }
+                                    {
+                                        state.userDetails?.role !== 'admin' &&
+                                        <button onClick={() => {
+                                            setOpenPrintToken(true)
+                                            setCurrentEntry(row)
+                                            getTokenLength()
+                                        }} className='py-1 px-2 rounded-md bg-blue-400'>Out </button>
+                                    }
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            : type === 'tradeXing' ?
+                <Table className='table-auto border w-[2200px]'>
+              <TableHeader className='bg-primary'>
+            <TableRow className='grid grid-cols-[repeat(33,minmax(0,1fr))] hover:bg-inherit'>
+                <TableHead className="pl-2 h-auto text-white col-span-1">Ser/ID</TableHead>
+                <TableHead className='pl-2 h-auto text-white col-span-2'>Driver Name / گاڈی چلانے والے کا نام</TableHead>
+                <TableHead className="pl-2 h-auto text-white col-span-1">Father Name / والد کا نام</TableHead>
+                <TableHead className="pl-2 h-auto text-white col-span-2">CNIC / شناختی کارڈ</TableHead>
+                <TableHead className="pl-2 h-auto text-white col-span-2">Residence / رہائش</TableHead>
+                <TableHead className="pl-2 h-auto text-white col-span-2">Vehicle No / گاڑی نمبر</TableHead>
+                <TableHead className="pl-2 h-auto text-white col-span-2">Type of Vehicle / گاڑی کی قسم</TableHead>
+                <TableHead className='pl-2 h-auto text-white col-span-2'>Company / کمپنی کا نام</TableHead>
+                <TableHead className="pl-2 h-auto text-white col-span-2">Date Out / جانے کی تاریخ</TableHead>
+                <TableHead className='pl-2 h-auto text-white col-span-2'>Time Out / جانے کا وقت</TableHead>
+                <TableHead className="pl-2 h-auto text-white col-span-2">Date In / آنے کی تاریخ</TableHead>
+                <TableHead className='pl-2 h-auto text-white col-span-2'>Time In / آنے کا وقت</TableHead>
+                <TableHead className='pl-2 h-auto text-white col-span-2'>Item / آئٹم</TableHead>
+                <TableHead className="pl-2 h-auto text-white col-span-2">Load in Nos / تعداد</TableHead>
+                <TableHead className="pl-2 h-auto text-white col-span-2">Load in Tons / ٹن</TableHead>
+                <TableHead className='pl-2 h-auto text-white col-span-2'>Remarks / ریمارکس</TableHead>
+                <TableHead className="pl-2 h-auto text-white col-span-3">Action / عمل</TableHead>
+            </TableRow>
+        </TableHeader>
+                    <TableBody>
+                        {data.map((row: any, index) => (
+                            <TableRow key={index} className='grid grid-cols-[repeat(33,minmax(0,1fr))] hover:bg-inherit'>
+                                <TableCell className="pl-2 col-span-1 break-words flex items-center">
+                                    {
+                                        state.userDetails && state.userDetails.role === 'super-admin' &&
+                                        <input
+                                            type="checkbox"
+                                            id={row._id}
+                                            value={row._id}
+                                            checked={selectedOptions.includes(row._id)}
+                                            onChange={handleChange}
+                                            className='mr-2'
+                                        />
+                                    }
+                                    {index + 1}
+                                </TableCell>
+                                <TableCell className='pl-2 col-span-1 break-words'>{row.driverName}</TableCell>
+                                <TableCell className="pl-2 col-span-2 break-words">{row.fName}</TableCell>
+                                <TableCell className="pl-2 col-span-2 break-words">{row.cnic}</TableCell>
+                                <TableCell className="pl-2 col-span-2 break-words">{row.residenceOf}</TableCell>
+                                <TableCell className="pl-2 col-span-2 break-words">{row.vehNo}</TableCell>
+                                <TableCell className="pl-2 col-span-2 break-words">{row.typeOfVeh}</TableCell>
+                                <TableCell className="pl-2 col-span-2 break-words">{row.nameOfCoy}</TableCell>
+                                <TableCell className="pl-2 col-span-2 break-words">{row.dateTimeOut ? dayjs(row.dateTimeOut).format('DD-MM-YYYY') : '-'}</TableCell>
+                                <TableCell className='pl-2 col-span-2 break-words'>{row.dateTimeOut ? dayjs(row.dateTimeOut).format('H:mm A') : '-'}</TableCell>
+                                <TableCell className="pl-2 col-span-2 break-words">{row.dateTimeIn ? dayjs(row.dateTimeIn).format('DD-MM-YYYY') : '-'}</TableCell>
+                                <TableCell className='pl-2 col-span-2 break-words'>{row.dateTimeIn ? dayjs(row.dateTimeIn).format('H:mm A') : '-'}</TableCell>
+                                
+                                <TableCell className="pl-2 col-span-2 break-words">{row.item}</TableCell>
+                                <TableCell className="pl-2 col-span-2 break-words">{row.loadInNos}</TableCell>
+                                <TableCell className="pl-2 col-span-2 break-words">{row.loadInTns}</TableCell>
+                                <TableCell className="pl-2 col-span-2 break-words">{row.remarks}</TableCell>
+                                <TableCell className="pl-2 col-span-3 flex flex-wrap gap-2 items-center">
+                                    {
+                                        (state.userDetails?.role === 'super-admin' || state.userDetails?.role === 'user-out-trade-xing') &&
+                                        <>
+                                            <button onClick={() => {
+                                                setCurrentEntry(row)
+                                                setOpenEdit(true)
+                                            }} className='py-1 px-2 rounded-md bg-zinc-300'>Edit</button>
+                                        </>
+                                    }
+                                    {
+                                        state.userDetails?.role === 'super-admin' &&
+                                        <button disabled={!!deleteEntryId} onClick={() => deleteEntry(row._id)} className='py-1 px-2 rounded-md bg-red-400'>{deleteEntryId === row._id ? <Loader height='h-4' width='w-4' /> : 'Delete'} </button>
+                                    }
+                                    {
+                                        state.userDetails?.role !== 'admin' &&
+                                        <button onClick={() => {
+                                            setOpenPrintToken(true)
+                                            setCurrentEntry(row)
+                                            getTokenLength()
+                                        }} className='py-1 px-2 rounded-md bg-blue-400'>Out </button>
+                                    }
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            : null
+}
 
-                                    </TableHeader>
-                                    <TableBody>
-                                        {data.map((row: any, index) => (
-                                            <TableRow key={index} className='grid grid-cols-[repeat(35,minmax(0,1fr))] hover:bg-inherit'>
-                                                <TableCell className="pl-2 col-span-1 break-words flex items-center">
-                                                    {
-                                                        state.userDetails && state.userDetails.role === 'super-admin' &&
-                                                        <input
-                                                            type="checkbox"
-                                                            id={row._id}
-                                                            value={row._id}
-                                                            checked={selectedOptions.includes(row._id)}
-                                                            onChange={handleChange}
-                                                            className='mr-2'
-                                                        />
-                                                    }
-                                                    {index + 1}
-                                                </TableCell>
-                                                <TableCell className='pl-2 col-span-1 break-words'>{row.name}</TableCell>
-                                                <TableCell className="pl-2 col-span-2 break-words">{row.fName}</TableCell>
-                                                <TableCell className="pl-2 col-span-2 break-words">{row.cnic}</TableCell>
-                                                <TableCell className="pl-2 col-span-2 break-words">{row.address}</TableCell>
-                                                <TableCell className="pl-2 col-span-2 break-words">{row.vehsType}</TableCell>
-                                                <TableCell className="pl-2 col-span-2 break-words">{row.dateTimeOut ? dayjs(row.dateTimeOut).format('DD-MM-YYYY') : '-'}</TableCell>
-                                                <TableCell className='pl-2 col-span-2 break-words'>{row.dateTimeOut ? dayjs(row.dateTimeOut).format('H:mm A') : '-'}</TableCell>
-                                                <TableCell className="pl-2 col-span-2 break-words">{row.dateTimeIn ? dayjs(row.dateTimeIn).format('DD-MM-YYYY') : '-'}</TableCell>
-                                                <TableCell className='pl-2 col-span-2 break-words'>{row.dateTimeIn ? dayjs(row.dateTimeIn).format('H:mm A') : '-'}</TableCell>
-                                                <TableCell className="pl-2 col-span-2 break-words">{row.guestName}</TableCell>
-                                                <TableCell className="pl-2 col-span-2 break-words">{row.cnicOfGuest}</TableCell>
-                                                <TableCell className="pl-2 col-span-2 break-words">{row.addressOfGuest}</TableCell>
-                                                <TableCell className='pl-2 col-span-2 break-words'>{row.childrenNos}</TableCell>
-                                                <TableCell className="pl-2 col-span-2 break-words">{row.accompanyingFamilyMembersName}</TableCell>
-                                                <TableCell className="pl-2 col-span-3 break-words">{row.cnicOfFamilyMembers}</TableCell>
-                                                <TableCell className="pl-2 col-span-1 break-words">{row.relation}</TableCell>
-                                                <TableCell className="pl-2 col-span-3 flex flex-wrap gap-2 items-center">
-                                                    {
-                                                        (state.userDetails?.role === 'super-admin' || state.userDetails?.role === 'user-out-local') &&
-                                                        <>
-                                                            <button onClick={() => {
-                                                                setCurrentEntry(row)
-                                                                setOpenEdit(true)
-                                                            }} className='py-1 px-2 rounded-md bg-zinc-300'>Edit</button>
-                                                        </>
-                                                    }
-                                                    {
-                                                        state.userDetails?.role === 'super-admin' &&
-                                                        <button disabled={!!deleteEntryId} onClick={() => deleteEntry(row._id)} className='py-1 px-2 rounded-md bg-red-400'>{deleteEntryId === row._id ? <Loader height='h-4' width='w-4' /> : 'Delete'} </button>
-                                                    }
-                                                    {
-                                                        state.userDetails?.role !== 'admin' &&
-                                                        <button onClick={() => addOutEntry(row)} className='py-1 px-2 rounded-md bg-blue-400'>{inEntry === row._id ? <Loader height='h-4' width='w-4' /> : 'Out'} </button>
-                                                    }
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-
-                                    </TableBody>
-                                </Table>
-                                :
-                                <Table className='table-auto border w-[2000px]'>
-                                    <TableHeader className='bg-primary'>
-                                        <TableRow className='grid grid-cols-[repeat(18,minmax(0,1fr))] hover:bg-inherit'>
-                                            <TableHead className="pl-2 h-auto text-white col-span-1">Ser No</TableHead>
-                                            <TableHead className='pl-2 h-auto text-white col-span-1'>Name / نام</TableHead>
-                                            <TableHead className="pl-2 h-auto text-white col-span-1">Father Name / والد کا نام</TableHead>
-                                            <TableHead className="pl-2 h-auto text-white col-span-2">CNIC / شناختی کارڈ</TableHead>
-                                            <TableHead className='pl-2 h-auto text-white col-span-2'>Address / پتہ</TableHead>
-                                            <TableHead className='pl-2 h-auto text-white col-span-1'>Driver Name / گاڈی چلانے والے کا نام</TableHead>
-                                            <TableHead className="pl-2 h-auto text-white col-span-1">Second Seater / دوسری ثیٹر</TableHead>
-                                            <TableHead className="pl-2 h-auto text-white col-span-1">Chassis Number / باڈی نمبر</TableHead>
-                                            <TableHead className="pl-2 h-auto text-white col-span-1">Engine Number / انجن نامبر</TableHead>
-                                            <TableHead className="pl-2 h-auto text-white col-span-1">Date Out / جانے کی تاریخ</TableHead>
-                                            <TableHead className='pl-2 h-auto text-white col-span-1'>Time Out / جانے کا وقت</TableHead>
-                                            <TableHead className="pl-2 h-auto text-white col-span-1">Date In / آنے کی تاریخ</TableHead>
-                                            <TableHead className='pl-2 h-auto text-white col-span-1'>Time In / آنے کا وقت</TableHead>
-                                            <TableHead className="pl-2 h-auto text-white col-span-1">Regn No / درج نمبر</TableHead>
-                                            <TableHead className="pl-2 h-auto text-white col-span-2">Action / عمل</TableHead>
-                                        </TableRow>
-
-                                    </TableHeader>
-                                    <TableBody>
-                                        {data.map((row: any, index) => (
-                                            <TableRow key={index} className='grid grid-cols-[repeat(18,minmax(0,1fr))] hover:bg-inherit'>
-                                                <TableCell className="pl-2 col-span-1 break-words">
-                                                    {
-                                                        state.userDetails && state.userDetails.role === 'super-admin' &&
-                                                        <input
-                                                            type="checkbox"
-                                                            id={row._id}
-                                                            value={row._id}
-                                                            checked={selectedOptions.includes(row._id)}
-                                                            onChange={handleChange}
-                                                            className='mr-2'
-                                                        />
-                                                    }
-                                                    {index + 1}
-                                                </TableCell>
-                                                <TableCell className='pl-2 col-span-1 break-words'>{row.name}</TableCell>
-                                                <TableCell className="pl-2 col-span-1 break-words">{row.fName}</TableCell>
-                                                <TableCell className="pl-2 col-span-2 break-words">{row.cnic}</TableCell>
-                                                <TableCell className='pl-2 col-span-2 break-words'>{row.address}</TableCell>
-                                                <TableCell className='pl-2 col-span-1 break-words'>{row.driverName}</TableCell>
-                                                <TableCell className="pl-2 col-span-1 break-words">{row.secondSeater}</TableCell>
-                                                <TableCell className="pl-2 col-span-1 break-words">{row.chassisNumber}</TableCell>
-                                                <TableCell className="pl-2 col-span-1 break-words">{row.engineNumber}</TableCell>
-                                                <TableCell className="pl-2 col-span-1 break-words">{row.dateTimeOut ? dayjs(row.dateTimeOut).format('DD-MM-YYYY') : '-'}</TableCell>
-                                                <TableCell className='pl-2 col-span-1 break-words'>{row.dateTimeOut ? dayjs(row.dateTimeOut).format('H:mm A') : '-'}</TableCell>
-                                                <TableCell className="pl-2 col-span-1 break-words">{row.dateTimeIn ? dayjs(row.dateTimeIn).format('DD-MM-YYYY') : '-'}</TableCell>
-                                                <TableCell className='pl-2 col-span-1 break-words'>{row.dateTimeIn ? dayjs(row.dateTimeIn).format('H:mm A') : '-'}</TableCell>
-                                                <TableCell className="pl-2 col-span-1 break-words">{row.regnNo}</TableCell>
-                                                <TableCell className="pl-2 col-span-2 flex flex-wrap gap-2 items-center">
-                                                    {
-                                                        (state.userDetails?.role === 'super-admin' || state.userDetails?.role === 'user-out-fuel-trade') &&
-                                                        <>
-                                                            <button onClick={() => {
-                                                                setCurrentEntry(row)
-                                                                setOpenEdit(true)
-                                                            }} className='py-1 px-2 rounded-md bg-zinc-300'>Edit</button>
-                                                        </>
-                                                    }
-                                                    {
-                                                        state.userDetails?.role === 'super-admin' &&
-                                                        <button disabled={!!deleteEntryId} onClick={() => deleteEntry(row._id)} className='py-1 px-2 rounded-md bg-red-400'>{deleteEntryId === row._id ? <Loader height='h-4' width='w-4' /> : 'Delete'} </button>
-                                                    }
-                                                    {
-                                                        state.userDetails?.role !== 'admin' &&
-                                                        <button onClick={() => {
-                                                            setOpenPrintToken(true)
-                                                            setCurrentEntry(row)
-                                                            getTokenLength()
-                                                        }} className='py-1 px-2 rounded-md bg-blue-400'>Out </button>
-                                                    }
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-
-                                    </TableBody>
-                                </Table>
-
-                }
 
             </div>
             {

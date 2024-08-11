@@ -82,7 +82,7 @@ export default function Login() {
         </div>
       )}
       <div className="mx-auto flex justify-center items-center">
-        <div className="m-0 sm:m-5 bg-white md:shadow-lg sm:rounded-[40px] flex justify-center flex-1 md:max-w-[70rem] mx-auto">
+        <div className="m-0 sm:m-5 bg-white md:vshadow-lg sm:rounded-[40px] flex justify-center flex-1 md:max-w-[70rem] mx-auto">
           <Toaster />
           {/* <div className="hidden md:flex flex-col justify-center items-center min-h-screen bg-primary">
                 <h1 className="text-4xl lg:text-[2.4rem] font-bold text-white w-[90%] lg:w-[80%] text-center">WELCOME TO CHEDGI XING</h1>

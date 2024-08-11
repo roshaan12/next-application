@@ -57,6 +57,20 @@ export async function PATCH(request: NextRequest, params: { params: { id: string
                 destination: body.destination
             }
         }
+    else if (body.type === 'tradeXing') {
+        data = {
+            ...data,
+      
+            residenceOf: body.residenceOf,
+            vehNo: body.vehNo,
+            typeOfVeh: body.typeOfVeh,
+            nameOfCoy: body.nameOfCoy,
+            item: body.item,
+            loadInNos: body.loadInNos,
+            loadInTns: body.loadInTns,
+            remarks: body.remarks,
+        };
+    }
         console.log(data);
 
         let entry = await Entry.findOneAndUpdate({ _id: params.params.id }, { ...data })

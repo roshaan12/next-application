@@ -49,29 +49,57 @@ export const signInSchema = z.object({
 // })
 
 
-export const formSchema = z.object({
-    type: z.string(),
-    name: z.string().min(1, 'Name is required'),
-    fName: z.string().min(1, 'Father\'s name is required'),
-    cnic: z.string().min(1, 'CNIC is required'),
-    address: z.string().min(1, 'Address is required'),
 
-    // Optional fields
-    vehsType: z.string().optional(),
-    accompanyingFamilyMembersName: z.string().optional(),
-    cnicOfFamilyMembers: z.string().optional(),
-    relation: z.string().optional(),
-    guestName: z.string().optional(),
-    cnicOfGuest: z.string().optional(),
-    addressOfGuest: z.string().optional(),
-    childrenNos: z.string().optional(),
-    driverName: z.string().optional(),
-    secondSeater: z.string().optional(),
-    chassisNumber: z.string().optional(),
-    engineNumber: z.string().optional(),
-    regnNo: z.string().optional(),
-    destination: z.string().optional(),
-})
+
+export const formSchema = z.object({
+  type: z.string(),
+  name: z.string().optional(),
+  fName: z.string().min(1, "Father's name is required"),
+  cnic: z.string().min(1, 'CNIC is required'),
+  address: z.string().optional(),
+  // Optional fields
+  vehsType: z.string().optional(),
+  accompanyingFamilyMembersName: z.string().optional(),
+  cnicOfFamilyMembers: z.string().optional(),
+  relation: z.string().optional(),
+  guestName: z.string().optional(),
+  cnicOfGuest: z.string().optional(),
+  addressOfGuest: z.string().optional(),
+  childrenNos: z.string().optional(),
+  driverName: z.string().optional(),
+  secondSeater: z.string().optional(),
+  chassisNumber: z.string().optional(),
+  engineNumber: z.string().optional(),
+  regnNo: z.string().optional(),
+  destination: z.string().optional(),
+  // Fields specific to tradeXing
+  residenceOf: z.string().optional(),
+  vehNo: z.string().optional(),
+  typeOfVeh: z.string().optional(),
+  nameOfCoy: z.string().optional(),
+  item: z.string().optional(),
+  loadInNos: z.string().optional(),
+  loadInTns: z.string().optional(),
+  remarks: z.string().optional(),
+}).superRefine((data, ctx) => {
+  if (data.type !== 'tradeXing') {
+    if (!data.name || data.name.length < 1) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['name'],
+        message: 'Name is required',
+      });
+    }
+    if (!data.address || data.address.length < 1) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['address'],
+        message: 'Address is required',
+      });
+    }
+  }
+});
+
 // .superRefine((data: any, ctx) => {
 //     let isValid = true;
 

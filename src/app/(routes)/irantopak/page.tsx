@@ -3,7 +3,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableHead,
     TableHeader,
@@ -29,19 +28,15 @@ function IranToPak() {
     const type = searchParams.get('type')
     const router = useRouter()
 
-    // const [type, setType] = useState('local')
     const [data, setData] = useState([])
     const [loading, setLoading] = useState(true)
     const [deleteEntryId, setDeleteEntryId] = useState('')
-    // const [search, setSearch] = useState('')
     const [tempSearch, setTempSearch] = useState(search ? search : '')
     const [currentEntry, setCurrentEntry] = useState<any>()
     const [openEdit, setOpenEdit] = useState(false)
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
     const [deleteBulkLoading, setDeleteBulkLoading] = useState(false)
-
     const [inEntry, setInEntry] = useState('')
-
 
     async function fetchData() {
         setLoading(true)
@@ -72,7 +67,7 @@ function IranToPak() {
         }
     }
     useEffect(() => {
-        if (type !== 'local' && type !== 'fuelTrade') {
+        if (type !== 'local' && type !== 'fuelTrade' && type !== 'tradeXing') {
             router.push(`/irantopak?type=local`)
         }
         else if ((state.userDetails && state.userDetails.role === 'user-in-local') && type === 'fuelTrade') {
@@ -142,13 +137,12 @@ function IranToPak() {
     const deleteEntries = async (ids: string[]) => {
         setDeleteBulkLoading(true)
         try {
-            // Assuming your API endpoint can accept an array of IDs for deletion
             const res = await fetch(`/api/entry/bulk`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ ids }), // Send the array of IDs as a JSON payload
+                body: JSON.stringify({ ids }),
             });
 
             const data = await res.json();
@@ -157,7 +151,6 @@ function IranToPak() {
                 throw new Error(data.message);
             }
 
-            // Display success message
             toast.success(data.message, {
                 duration: 3000,
                 position: window.matchMedia("(min-width: 600px)").matches ? "bottom-right" : "bottom-center",
@@ -169,10 +162,8 @@ function IranToPak() {
                 },
             });
 
-            // Refetch data to update the UI after deletion
             fetchData();
         } catch (err: any) {
-            // Handle any errors that occurred during the deletion process
             toast.error(err.message, {
                 duration: 4000,
                 position: window.matchMedia("(min-width: 600px)").matches ? "bottom-right" : "bottom-center",
@@ -184,14 +175,11 @@ function IranToPak() {
                 },
             });
         } finally {
-            // Reset any related state or perform cleanup as necessary
-            setDeleteEntryId(''); // Adjust accordingly if managing deletion IDs state
+            setDeleteEntryId('');
             setDeleteBulkLoading(false)
             setSelectedOptions([])
         }
     };
-
-
 
     const addInEntry = async (row: any) => {
         try {
@@ -240,29 +228,20 @@ function IranToPak() {
         }
     }
 
-
-
     function isDateMoreThanAMonthAgo(dateString: Date) {
         const date = new Date(dateString);
-        const currentDate = new Date(); // Step 1: Get current date
-        const oneMonthAgo = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, currentDate.getDate()); // Step 2: Subtract a month
-        return date < oneMonthAgo; // Step 3: Compare the dates
+        const currentDate = new Date();
+        const oneMonthAgo = new Date();
+        oneMonthAgo.setMonth(currentDate.getMonth() - 1);
+        return date < oneMonthAgo;
     }
 
-
-
-
-
-
-    // Handle checkbox change
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
         setSelectedOptions((prev) => {
             if (prev.includes(value)) {
-                // Remove the item from the array if it is already selected
                 return prev.filter((item) => item !== value);
             } else {
-                // Add the item to the array if it is not already selected
                 return [...prev, value];
             }
         });
@@ -279,7 +258,7 @@ function IranToPak() {
             <div className='block sm:flex justify-between items-center'>
                 <h1 className='text-2xl font-bold text-zinc-800'>Iran to Pak</h1>
                 <div className='flex gap-2 mt-3 sm:mt-0'>
-                    <input value={tempSearch} onChange={(e) => setTempSearch(e.target.value)} type="text" placeholder='Search' className='w-[180px] flex-grow sm:w-auto text-sm sm:text-base bg-transparent border border-zinc-300 rounded-md py-2 px-4 text-zinc-800' name="" id="" />
+                    <input value={tempSearch} onChange={(e) => setTempSearch(e.target.value)} type="text" placeholder='Search' className='w-[180px] flex-grow sm:w-auto text-sm sm:text-base bg-transparent border border-zinc-300 rounded-md py-2 px-4 text-zinc-800' />
                     <Link href={`/irantopak?type=${type}&search=${tempSearch}`}><button className='bg-primary rounded-md py-2 px-4 text-white'>Search</button></Link>
                 </div>
             </div>
@@ -291,7 +270,7 @@ function IranToPak() {
                         <select value={type!} onChange={(e) => changeType(e.target.value)} className='py-2 px-4 text-sm text-zinc-800 shadow-[0_0_15px_rgba(0,0,0,0.3)] rounded-md border-2 border-zinc-500'>
                             <option value="local">Paragkoh Fuel Xing</option>
                             <option value="fuelTrade">Chedgi Pedestarian Xing</option>
-                            <option value="">Chedgi Trade Xing</option>
+                            <option value="tradeXing">Chedgi Trade Xing</option>
                         </select>
                     }
                     {
@@ -323,7 +302,6 @@ function IranToPak() {
                             :
                             type === 'local' ?
                                 <Table className='table-auto border w-[2200px]'>
-                                    {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
                                     <TableHeader className='bg-primary'>
                                         <TableRow className=' grid grid-cols-[repeat(35,minmax(0,1fr))] hover:bg-inherit'>
                                             <TableHead className="pl-2 h-auto text-white col-span-1">Ser/ID</TableHead>
@@ -345,7 +323,6 @@ function IranToPak() {
                                             <TableHead className="pl-2 h-auto text-white col-span-1">Relation / ر شتہ</TableHead>
                                             <TableHead className="pl-2 h-auto text-white col-span-3">Action / عمل</TableHead>
                                         </TableRow>
-
                                     </TableHeader>
                                     <TableBody>
                                         {data.map((row: any, index) => (
@@ -401,7 +378,8 @@ function IranToPak() {
 
                                     </TableBody>
                                 </Table>
-                                :
+                            :
+                            type === 'fuelTrade' ?
                                 <Table className='table-auto border w-[2000px]'>
                                     <TableHeader className='bg-primary'>
                                         <TableRow className='grid grid-cols-[repeat(18,minmax(0,1fr))] hover:bg-inherit'>
@@ -421,7 +399,6 @@ function IranToPak() {
                                             <TableHead className="pl-2 h-auto text-white col-span-1">Regn No / درج نمبر</TableHead>
                                             <TableHead className="pl-2 h-auto text-white col-span-2">Action / عمل</TableHead>
                                         </TableRow>
-
                                     </TableHeader>
                                     <TableBody>
                                         {data.map((row: any, index) => (
@@ -472,12 +449,87 @@ function IranToPak() {
                                                 </TableCell>
                                             </TableRow>
                                         ))}
-
                                     </TableBody>
                                 </Table>
-
+                            :
+                            type === 'tradeXing' &&
+                                <Table className='table-auto border w-[2400px]'>
+                                    <TableHeader className='bg-primary'>
+                                        <TableRow className='grid grid-cols-[repeat(33,minmax(0,1fr))] hover:bg-inherit'>
+                                        <TableHead className="pl-2 h-auto text-white col-span-1">Ser/ID</TableHead>
+                <TableHead className='pl-2 h-auto text-white col-span-2'>Driver Name / گاڈی چلانے والے کا نام</TableHead>
+                <TableHead className="pl-2 h-auto text-white col-span-1">Father Name / والد کا نام</TableHead>
+                <TableHead className="pl-2 h-auto text-white col-span-2">CNIC / شناختی کارڈ</TableHead>
+                <TableHead className="pl-2 h-auto text-white col-span-2">Residence / رہائش</TableHead>
+                <TableHead className="pl-2 h-auto text-white col-span-2">Vehicle No / گاڑی نمبر</TableHead>
+                <TableHead className="pl-2 h-auto text-white col-span-2">Type of Vehicle / گاڑی کی قسم</TableHead>
+                <TableHead className='pl-2 h-auto text-white col-span-2'>Company / کمپنی کا نام</TableHead>
+                <TableHead className="pl-2 h-auto text-white col-span-2">Date Out / جانے کی تاریخ</TableHead>
+                <TableHead className='pl-2 h-auto text-white col-span-2'>Time Out / جانے کا وقت</TableHead>
+                <TableHead className="pl-2 h-auto text-white col-span-2">Date In / آنے کی تاریخ</TableHead>
+                <TableHead className='pl-2 h-auto text-white col-span-2'>Time In / آنے کا وقت</TableHead>
+                <TableHead className='pl-2 h-auto text-white col-span-2'>Item / آئٹم</TableHead>
+                <TableHead className="pl-2 h-auto text-white col-span-2">Load in Nos / تعداد</TableHead>
+                <TableHead className="pl-2 h-auto text-white col-span-2">Load in Tons / ٹن</TableHead>
+                <TableHead className='pl-2 h-auto text-white col-span-2'>Remarks / ریمارکس</TableHead>
+                <TableHead className="pl-2 h-auto text-white col-span-3">Action / عمل</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {data.map((row: any, index) => (
+                                            <TableRow key={index} className={`${isDateMoreThanAMonthAgo(row.dateTimeIn) && 'bg-red-100'} grid grid-cols-[repeat(33,minmax(0,1fr))] hover:bg-inherit`}>
+                                                <TableCell className="pl-2 col-span-1 break-words">
+                                                    {
+                                                        state.userDetails && state.userDetails.role === 'super-admin' &&
+                                                        <input
+                                                            type="checkbox"
+                                                            id={row._id}
+                                                            value={row._id}
+                                                            checked={selectedOptions.includes(row._id)}
+                                                            onChange={handleChange}
+                                                            className='mr-2'
+                                                        />
+                                                    }
+                                                    {index + 1}
+                                                    {isDateMoreThanAMonthAgo(row.dateTimeIn) && <span className='text-red-500 ml-2 font-semibold'>Expired</span>}
+                                                </TableCell>
+                                                <TableCell className='pl-2 col-span-2 break-words'>{row.driverName}</TableCell>
+                                <TableCell className="pl-2 col-span-1 break-words">{row.fName}</TableCell>
+                                <TableCell className="pl-2 col-span-2 break-words">{row.cnic}</TableCell>
+                                <TableCell className="pl-2 col-span-2 break-words">{row.residenceOf}</TableCell>
+                                <TableCell className="pl-2 col-span-2 break-words">{row.vehNo}</TableCell>
+                                <TableCell className="pl-2 col-span-2 break-words">{row.typeOfVeh}</TableCell>
+                                <TableCell className="pl-2 col-span-2 break-words">{row.nameOfCoy}</TableCell>
+                                <TableCell className="pl-2 col-span-2 break-words">{row.dateTimeOut ? dayjs.utc(row.dateTimeOut).format('DD-MM-YYYY') : '-'}</TableCell>
+                            <TableCell className='pl-2 col-span-2 break-words'>{row.dateTimeOut ? dayjs.utc(row.dateTimeOut).format('H:mm A') : '-'}</TableCell>
+                            <TableCell className="pl-2 col-span-2 break-words">{row.dateTimeIn ? dayjs.utc(row.dateTimeIn).format('DD-MM-YYYY') : '-'}</TableCell>
+                            <TableCell className='pl-2 col-span-2 break-words'>{row.dateTimeIn ? dayjs.utc(row.dateTimeIn).format('H:mm A') : '-'}</TableCell>
+                                                    
+                                <TableCell className="pl-2 col-span-2 break-words">{row.item}</TableCell>
+                                <TableCell className="pl-2 col-span-2 break-words">{row.loadInNos}</TableCell>
+                                <TableCell className="pl-2 col-span-2 break-words">{row.loadInTns}</TableCell>
+                                <TableCell className="pl-2 col-span-2 break-words">{row.remarks}</TableCell>
+                                                <TableCell className="pl-2 col-span-3 flex flex-wrap gap-2 items-center">
+                                                    {
+                                                        state.userDetails?.role === 'super-admin' &&
+                                                        <>
+                                                            <button onClick={() => {
+                                                                setCurrentEntry(row)
+                                                                setOpenEdit(true)
+                                                            }} className='py-1 px-2 rounded-md bg-zinc-300'>Edit</button>
+                                                            <button disabled={!!deleteEntryId} onClick={() => deleteEntry(row._id)} className='py-1 px-2 rounded-md bg-red-400'>{deleteEntryId === row._id ? <Loader height='h-4' width='w-4' /> : 'Delete'} </button>
+                                                        </>
+                                                    }
+                                                    {
+                                                        state.userDetails?.role !== 'admin' &&
+                                                        <button onClick={() => addInEntry(row)} className='py-1 px-2 rounded-md bg-blue-400'>{inEntry === row._id ? <Loader height='h-4' width='w-4' /> : 'In'}</button>
+                                                    }
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
                 }
-
             </div>
             {
                 currentEntry &&
@@ -490,7 +542,6 @@ function IranToPak() {
                     fetchData={fetchData}
                 />
             }
-
         </div>
     );
 }
