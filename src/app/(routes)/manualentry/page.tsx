@@ -113,10 +113,10 @@ function ManualEntry() {
                         <div className='flex flex-col gap-1'>
                             <label htmlFor="select" className='text-sm text-zinc-700 font-semibold'>Select / منتخب کریں۔</label>
                             <select id="select" {...register("type")} className='border border-zinc-300 text-zinc-800 focus:outline-none py-3 px-4 rounded-lg text-base'>
-                                <option value="local">Paragkoh Fuel Xing</option>
+                                <option value="local">Chedgi Pedestarian Xing</option>
                                 {state.userDetails && (state.userDetails.role === 'super-admin' || state.userDetails.role === 'admin') && (
                                     <>
-                                        <option value="fuelTrade">Chedgi Pedestarian Xing</option>
+                                        <option value="fuelTrade">Paragkoh Fuel Xing</option>
                                         <option value="tradeXing">Chedgi Trade Xing</option>
                                     </>
                                 )}
