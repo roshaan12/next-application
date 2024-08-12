@@ -28,9 +28,9 @@ const Page = () => {
   if (state.userDetails && state.userDetails.role === 'super-admin') {
     data = [
       { id: 'stats', title: 'DAILY STATE', icon: <ImStatsBars className="text-[60px] text-zinc-800" /> },
-      { id: 'fuelTrade', title: 'UPLOAD EXCEL NOBAT LIST', icon: <SiMicrosoftexcel className="text-[60px] text-zinc-800" /> },
-      { id: 'local', title: 'UPLOAD EXCEL LOCAL RESIDENTS', icon: <SiMicrosoftexcel className="text-[60px] text-zinc-800" /> },
-      { id: 'tradeXing', title: 'UPLOAD EXCEL TRADE XING', icon: <SiMicrosoftexcel className="text-[60px] text-zinc-800" /> },
+      { id: 'fuelTrade', title: 'UPLOAD EXCEL PARAGKOH FUEL XING', icon: <SiMicrosoftexcel className="text-[60px] text-zinc-800" /> },
+      { id: 'local', title: 'UPLOAD EXCEL CHEDGI PEDESTARIAN XING', icon: <SiMicrosoftexcel className="text-[60px] text-zinc-800" /> },
+      { id: 'tradeXing', title: 'UPLOAD EXCEL CHEDGI TRADE XING', icon: <SiMicrosoftexcel className="text-[60px] text-zinc-800" /> },
       // { title: 'COMPARISON OLD NOBATS', icon: <MdOutlineCompareArrows className="text-[60px] text-zinc-800" /> },
     ]
   }
@@ -334,13 +334,15 @@ const Page = () => {
                   :
                   <div className="w-full lg:w-[70%]">
                     <BarChart
-                      data={[fetchedData.tokens, fetchedData.paktoiranofficial, fetchedData.irantopakofficial, fetchedData.paktoiranlocal, fetchedData.irantopaklocal]}
+                      data={[fetchedData.tokens, fetchedData.paktoiranofficial, fetchedData.irantopakofficial, fetchedData.paktoiranlocal, fetchedData.irantopaklocal,fetchedData.paktoirantradexing, fetchedData.irantopaktradexing]}
                       labels={[
                         'Token Issued',
                         'Fuel Veh Pak to Iran',
                         'Fuel Veh Iran to Pak',
                         'Pedestrian Pak to Iran',
                         'Pedestrian Iran to Pak',
+                        'Trade Xing Pak to Iran',
+                        'Trade Xing Iran to Pak',
                       ]}
                     />
                   </div>
@@ -356,7 +358,7 @@ const Page = () => {
           :
           active === 2 ?
             <div>
-              <h1 className='text-2xl font-bold text-zinc-800'>UPLOAD EXCEL NOBAT LIST</h1>
+              <h1 className='text-2xl font-bold text-zinc-800'>UPLOAD EXCEL PARAGKOH FUEL XING</h1>
               <div className="mt-10">
                 <div>
                   <label htmlFor="file" className="w-[300px] h-[70px] text-zinc-800 font-bold border-2 border-dashed rounded-2xl bg-zinc-100 flex justify-center items-center">

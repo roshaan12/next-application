@@ -38,6 +38,13 @@ export async function GET() {
                 $lt: endOfToday
             }
         })
+        let paktoirantradexing = await Entry.find({
+            type: 'tradeXing',
+            dateTimeOut: {
+                $gte: startOfToday,
+                $lt: endOfToday
+            }
+        })
         let irantopaklocal = await Entry.find({
             type: 'local',
             dateTimeIn: {
@@ -47,6 +54,13 @@ export async function GET() {
         })
         let irantopakofficial = await Entry.find({
             type: 'fuelTrade',
+            dateTimeIn: {
+                $gte: startOfToday,
+                $lt: endOfToday
+            }
+        })
+        let irantopaktradexing = await Entry.find({
+            type: 'tradeXing',
             dateTimeIn: {
                 $gte: startOfToday,
                 $lt: endOfToday
@@ -63,8 +77,10 @@ export async function GET() {
             // entries: entry_data.length,
             paktoiranlocal: paktoiranlocal.length,
             paktoiranofficial: paktoiranofficial.length,
+            paktoirantradexing: paktoirantradexing.length,
             irantopaklocal: irantopaklocal.length,
-            irantopakofficial: irantopakofficial.length
+            irantopakofficial: irantopakofficial.length,
+            irantopaktradexing: irantopaktradexing.length
         }
 
         return NextResponse.json({ status: 'success', data })

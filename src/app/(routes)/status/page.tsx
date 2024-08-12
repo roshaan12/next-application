@@ -31,8 +31,9 @@ const Page = () => {
 
     let data = [
         { title: 'Token Data', id: 'token' },
-        { title: 'Chedgi Pedestarian Xing', id: 'fuelTrade' },
-        { title: 'Paragkoh Fuel Xing', id: 'local' },
+        { title: 'Paragkoh Fuel Xing', id: 'fuelTrade' },
+        { title: 'Chedgi Pedestarian Xing', id: 'local' },
+        { title: 'Chedgi Trade Xing', id: 'tradeXing' },
     ]
     const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -72,7 +73,6 @@ const Page = () => {
         exportToCSV(fetchedData, 'data')
     }
 
-
     return (
         <div className="mt-10">
             <Toaster />
@@ -89,7 +89,6 @@ const Page = () => {
                                             setFetchedData(null)
                                         }} className="text-white text-sm bg-primary w-full py-3 px-3 rounded-lg font-semibold">SHOW DATA</button>
                                     </div>
-
                                 )
                             })
                         }
@@ -102,7 +101,7 @@ const Page = () => {
                                 <input onChange={(e) => setCnicOfPerson(e.target.value)} type="text" className="w-[300px] border py-3 px-5 border-zinc-300 rounded-md" />
                             </div>
                             {
-                                selected === 'fuelTrade' &&
+                                (selected === 'fuelTrade' || selected === 'tradeXing') &&
                                 <div className="">
                                     <h1 className="text-zinc-700 font-semibold">Select Destination ( Optional )</h1>
                                     <select id="destination" onChange={(e) => setDestination(e.target.value)} className="w-[300px] border py-3 px-5 border-zinc-300 rounded-md">
@@ -135,17 +134,25 @@ const Page = () => {
                             selected === 'token' ?
                                 <div className="w-full lg:w-[70%]">
                                     <BarChart
-                                        data={[fetchedData.filter((val: any) => val.type === 'local').length, fetchedData.filter((val: any) => val.type === 'fuelTrade').length]}
+                                        data={[
+                                            fetchedData.filter((val: any) => val.type === 'local').length, 
+                                            fetchedData.filter((val: any) => val.type === 'fuelTrade').length,
+                                            fetchedData.filter((val: any) => val.type === 'tradeXing').length // Added tradeXing
+                                        ]}
                                         labels={[
                                             'Local',
-                                            'Fuel Trade'
+                                            'Fuel Trade',
+                                            'Trade Xing' // Added label for tradeXing
                                         ]}
                                     />
                                 </div>
                                 :
                                 <div className="w-full lg:w-[70%]">
                                     <BarChart
-                                        data={[fetchedData.filter((val: any) => val.dateTimeOut).length, fetchedData.filter((val: any) => val.dateTimeIn).length]}
+                                        data={[
+                                            fetchedData.filter((val: any) => val.dateTimeOut).length, 
+                                            fetchedData.filter((val: any) => val.dateTimeIn).length
+                                        ]}
                                         labels={[
                                             'Pak to Iran',
                                             'Iran to Pak'
@@ -158,7 +165,7 @@ const Page = () => {
                     :
                     null
             }
-
+    
             {
                 fetchedData && !fetchedData.length ?
                     <h1 className="mt-10 text-lg font-bold text-zinc-800">No Data Found</h1>

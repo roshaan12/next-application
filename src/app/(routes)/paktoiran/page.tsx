@@ -464,8 +464,8 @@ function PakToIran() {
                     {
                         (state.userDetails?.role === 'super-admin' || state.userDetails?.role === 'admin') &&
                         <select value={type!} onChange={(e) => changeType(e.target.value)} className='py-2 px-4 text-sm text-zinc-800 shadow-[0_0_15px_rgba(0,0,0,0.3)] rounded-md border-2 border-zinc-500'>
-                           <option value="local">Paragkoh Fuel Xing</option>
-                            <option value="fuelTrade">Chedgi Pedestarian Xing</option>
+                           <option value="local">Chedgi Pedestarian Xing</option>
+                            <option value="fuelTrade">Paragkoh Fuel Xing</option>
                             <option value="tradeXing">Chedgi Trade Xing</option>
                         </select>
                     }
