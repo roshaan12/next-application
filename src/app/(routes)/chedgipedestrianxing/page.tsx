@@ -1,12 +1,13 @@
 'use client'
 import React, { useState, useEffect, useContext } from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { Loader } from '@/components/common';
 import { ContextApi } from "@/context/context";
 
 function ChedgiPedestrianXing() {
     const { state } = useContext(ContextApi);
-    const userDetails = state?.userDetails || {}; // Fallback to an empty object if userDetails is null or undefined
+    const userDetails = state?.userDetails || {}; 
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -16,8 +17,6 @@ function ChedgiPedestrianXing() {
 
         return () => clearTimeout(timer);
     }, []);
-
-    console.log(userDetails.role);
 
     const shouldShowPakToIran = !userDetails.role || 
                                 userDetails.role === 'user-in-local' || 
@@ -61,4 +60,4 @@ function ChedgiPedestrianXing() {
     );
 }
 
-export default ChedgiPedestrianXing;
+export default dynamic(() => Promise.resolve(ChedgiPedestrianXing), { ssr: false });
