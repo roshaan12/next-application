@@ -265,14 +265,14 @@ function IranToPak() {
             <div className='flex justify-between items-center mt-3'>
                 <h1 className='text-base sm:text-xl text-red-500'>Crossed Vehs : {!loading && data.length ? data.length : '-'}</h1>
                 <div className='flex gap-2'>
-                    {/* {
+                    {
                         (state.userDetails?.role === 'super-admin' || state.userDetails?.role === 'admin') &&
                         <select value={type!} onChange={(e) => changeType(e.target.value)} className='py-2 px-4 text-sm text-zinc-800 shadow-[0_0_15px_rgba(0,0,0,0.3)] rounded-md border-2 border-zinc-500'>
                             <option value="local">Chedgi Pedestarian Xing</option>
                             <option value="fuelTrade">Paragkoh Fuel Xing</option>
                             <option value="tradeXing">Chedgi Trade Xing</option>
                         </select>
-                    } */}
+                    }
                     {
                         state.userDetails?.role === 'super-admin' &&
                         <Link href={'/manualentry'}><button className='bg-primary rounded-md py-2 px-4 text-white'>Add New</button></Link>
