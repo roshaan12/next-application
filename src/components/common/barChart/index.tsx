@@ -1,71 +1,93 @@
-// Import React and the Bar component from react-chartjs-2
 import React from 'react';
-import { Bar } from 'react-chartjs-2';
-import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend,
-} from 'chart.js';
-
-ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend
-);
+import ReactApexChart from 'react-apexcharts';
+import { ApexOptions } from 'apexcharts';
 
 type IProps = {
-    data: any,
-    labels: any
+    data: number[],
+    labels: string[]
 }
 
-// BarChart component
 const BarChart = ({ data, labels }: IProps) => {
-    // Data for the chart
-    const chartData = {
-        labels: labels,
-        datasets: [
-            {
-                label: 'Counts',
-                data: data,
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.6)',
-                    'rgba(54, 162, 235, 0.6)',
-                    'rgba(255, 206, 86, 0.6)',
-                    'rgba(75, 192, 192, 0.6)',
-                    'rgba(153, 102, 255, 0.6)',
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                ],
-                borderWidth: 1,
-                barThickness: 60
-            },
-        ],
-    };
-
-
-    // Options for the chart
-    const options = {
-        scales: {
-            y: {
-                beginAtZero: true,
+    // Define chart options
+    const chartOptions: ApexOptions = {
+        chart: {
+            type: 'bar',
+            height: 350,
+            toolbar: {
+                show: false,
             },
         },
+        plotOptions: {
+            bar: {
+                horizontal: false,
+                columnWidth: '60%',  // Similar to barThickness
+                distributed: true // Ensure colors are distributed among the bars
+            },
+        },
+        colors: [
+            '#FF6384', // Token Issued
+            '#36A2EB', // Fuel Veh Pak to Iran
+            '#FFCE56', // Fuel Veh Iran to Pak
+            '#4BC0C0', // Pedestrian Pak to Iran
+            '#9966FF', // Pedestrian Iran to Pak
+            '#FF9F40', // Trade Xing Pak to Iran
+            '#FFCD56', // Trade Xing Iran to Pak
+        ],
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            show: true,
+            width: 2,
+            colors: ['transparent']
+        },
+        xaxis: {
+            categories: labels,
+            labels: {
+                style: {
+                    colors: [
+                        '#FF6384', // Token Issued
+                        '#36A2EB', // Fuel Veh Pak to Iran
+                        '#FFCE56', // Fuel Veh Iran to Pak
+                        '#4BC0C0', // Pedestrian Pak to Iran
+                        '#9966FF', // Pedestrian Iran to Pak
+                        '#FF9F40', // Trade Xing Pak to Iran
+                        '#FFCD56', // Trade Xing Iran to Pak
+                    ],
+                    fontSize: '12px'
+                }
+            }
+        },
+        yaxis: {
+            title: {
+                text: 'Counts',
+            },
+        },
+        fill: {
+            opacity: 1
+        },
+        tooltip: {
+            y: {
+                formatter: (val: number) => `${val} counts`,
+            },
+        },
+        legend: {
+            show: false // Hide legend to avoid confusion with distributed colors
+        }
     };
 
-    // Render the Bar chart with the data and options
-    return <Bar data={chartData} options={options} />;
+    // Define chart series
+    const chartSeries = [{
+        name: 'Counts',
+        data: data,
+    }];
+
+    // Render the Bar chart
+    return (
+        <div id="chart">
+            <ReactApexChart options={chartOptions} series={chartSeries} type="bar" height={350} />
+        </div>
+    );
 };
 
 export default BarChart;

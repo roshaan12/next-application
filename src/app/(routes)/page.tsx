@@ -9,7 +9,6 @@ import readXlsxFile from 'read-excel-file'
 import { Toaster, toast } from 'react-hot-toast';
 import { ContextApi } from "@/context/context";
 
-
 const Page = () => {
   const { state, dispatch, Logout } = useContext(ContextApi)
 
@@ -29,16 +28,16 @@ const Page = () => {
     data = [
       { id: 'stats', title: 'DAILY STATE', icon: <ImStatsBars className="text-[60px] text-zinc-800" /> },
       { id: 'fuelTrade', title: 'UPLOAD EXCEL PARAGKOH FUEL XING', icon: <SiMicrosoftexcel className="text-[60px] text-zinc-800" /> },
-      { id: 'local', title: 'UPLOAD EXCEL CHEDGI PEDESTARIAN XING', icon: <SiMicrosoftexcel className="text-[60px] text-zinc-800" /> },
+      { id: 'local', title: 'UPLOAD EXCEL CHEDGI PEDESTRIAN XING', icon: <SiMicrosoftexcel className="text-[60px] text-zinc-800" /> },
       { id: 'tradeXing', title: 'UPLOAD EXCEL CHEDGI TRADE XING', icon: <SiMicrosoftexcel className="text-[60px] text-zinc-800" /> },
-      // { title: 'COMPARISON OLD NOBATS', icon: <MdOutlineCompareArrows className="text-[60px] text-zinc-800" /> },
+      { id: 'unified', title: 'UPLOAD UNIFIED DATA', icon: <SiMicrosoftexcel className="text-[60px] text-zinc-800" /> },
     ]
   }
 
   async function fetchData() {
     setLoading(true)
     try {
-      const res = await fetch(`/api/overallstats`)
+      const res = await fetch('/api/overallstats')
       const data = await res.json()
       if (data.status === 'error') {
         throw new Error(data.message)
@@ -67,22 +66,33 @@ const Page = () => {
     fetchData()
   }, [])
 
-
   function ReadExcelFile(e: any) {
-  const file = e.target.files[0];
+    const file = e.target.files[0];
 
-  if (file) {
-    const fileType = file.type;
-    const allowedTypes = [
-      'application/vnd.ms-excel', // for .xls
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' // for .xlsx
-    ];
-    if (allowedTypes.includes(fileType)) {
-      readXlsxFile(file).then((rows) => {
-        setSelectedFile(file.name)
-        setSelectedFileData(rows.slice(1))
-      }).catch((error) => {
-        toast.error(`Error reading the Excel file: ${error}`, {
+    if (file) {
+      const fileType = file.type;
+      const allowedTypes = [
+        'application/vnd.ms-excel', // for .xls
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' // for .xlsx
+      ];
+      if (allowedTypes.includes(fileType)) {
+        readXlsxFile(file).then((rows) => {
+          setSelectedFile(file.name)
+          setSelectedFileData(rows.slice(1))
+        }).catch((error) => {
+          toast.error(`Error reading the Excel file: ${error}`, {
+            duration: 4000,
+            position: window.matchMedia("(min-width: 600px)").matches ? "bottom-right" : "bottom-center",
+            style: {
+              backgroundColor: '#d9d9d9',
+              padding: window.matchMedia("(min-width: 600px)").matches ? "20px 30px" : "15px 20px",
+              fontSize: '14px',
+              fontWeight: 'bold'
+            },
+          });
+        });
+      } else {
+        toast.error('Invalid file type. Please upload an Excel file', {
           duration: 4000,
           position: window.matchMedia("(min-width: 600px)").matches ? "bottom-right" : "bottom-center",
           style: {
@@ -92,25 +102,11 @@ const Page = () => {
             fontWeight: 'bold'
           },
         });
-      });
+      }
     } else {
-      toast.error('Invalid file type. Please upload an Excel file', {
-        duration: 4000,
-        position: window.matchMedia("(min-width: 600px)").matches ? "bottom-right" : "bottom-center",
-        style: {
-          backgroundColor: '#d9d9d9',
-          padding: window.matchMedia("(min-width: 600px)").matches ? "20px 30px" : "15px 20px",
-          fontSize: '14px',
-          fontWeight: 'bold'
-        },
-      });
+      console.error('No file selected.');
     }
-  } else {
-    console.error('No file selected.');
   }
-}
-
-
 
   async function onSubmit(data: any) {
     try {
@@ -158,7 +154,6 @@ const Page = () => {
     }
 
   }
-
 
   const AddOfficialData = () => {
     if (!selectedFile || !selectedFileData.length) {
@@ -208,7 +203,6 @@ const Page = () => {
 
   }
 
-
   const AddLocalData = () => {
     if (!selectedFile || !selectedFileData.length) {
       toast.error('please select a file', {
@@ -239,7 +233,6 @@ const Page = () => {
       return
     }
 
-    
     let data = selectedFileData.map((item: any) => {
       return {
         type: type,
@@ -260,8 +253,6 @@ const Page = () => {
 
     onSubmit(data)
   }
-
-
 
   const AddTradeXingData = () => {
     if (!selectedFile || !selectedFileData.length) {
@@ -290,29 +281,75 @@ const Page = () => {
       });
       return;
     }
-    
-     
-    let data = selectedFileData.map((item : any) => {
+
+    let data = selectedFileData.map((item: any) => {
       return {
-          type: type,
-          driverName: item[0],
-          fName: item[1],
-          cnic: item[2],
-          residenceOf: item[3],
-          vehNo: item[4],
-          typeOfVeh: item[5],
-
-          nameOfCoy: item[6],
-          item: item[7],
-          loadInNos: item[8],
-          loadInTns: item[9],
-
-          remarks: item[10]
+        type: type,
+        driverName: item[0],
+        fName: item[1],
+        cnic: item[2],
+        residenceOf: item[3],
+        vehNo: item[4],
+        typeOfVeh: item[5],
+        nameOfCoy: item[6],
+        item: item[7],
+        loadInNos: item[8],
+        loadInTns: item[9],
+        remarks: item[10]
       };
-  });
-  onSubmit(data);
-};
-  
+    });
+    onSubmit(data);
+  }
+
+  const AddUnifiedData = () => {
+    if (!selectedFile || !selectedFileData.length) {
+      toast.error('Please select a file', {
+        duration: 4000,
+        position: window.matchMedia("(min-width: 600px)").matches ? "bottom-right" : "bottom-center",
+        style: {
+          backgroundColor: '#d9d9d9',
+          padding: window.matchMedia("(min-width: 600px)").matches ? "20px 30px" : "15px 20px",
+          fontSize: '14px',
+          fontWeight: 'bold'
+        },
+      });
+      return;
+    }
+
+    let data = selectedFileData.map((item: any) => {
+      return {
+        type: item[0],
+        name: item[1],
+        fName: item[2],
+        cnic: item[3],
+        address: item[4],
+        driverName: item[5],
+        secondSeater: item[6],
+        chassisNumber: item[7],
+        engineNumber: item[8],
+        regnNo: item[9],
+        destination: item[10],
+        vehsType: item[11],
+        guestName: item[12],
+        cnicOfGuest: item[13],
+        addressOfGuest: item[14],
+        childrenNos: item[15],
+        accompanyingFamilyMembersName: item[16],
+        cnicOfFamilyMembers: item[17],
+        relation: item[18],
+        residenceOf: item[19],
+        vehNo: item[20],
+        typeOfVeh: item[21],
+        nameOfCoy: item[22],
+        item: item[23],
+        loadInNos: item[24],
+        loadInTns: item[25],
+        remarks: item[26]
+      };
+    });
+
+    onSubmit(data);
+  };
 
   return (
     <div className="mt-10">
@@ -347,13 +384,6 @@ const Page = () => {
                     />
                   </div>
             }
-            {/* <div className="mt-10 flex flex-col gap-5">
-              <div className="text-lg font-bold py-4 px-5 rounded-md border shadow-[0_0_10px_rgba(0,0,0,0.2)]">TOKEN ISSUED : 123</div>
-              <div className="text-lg font-bold py-4 px-5 rounded-md border shadow-[0_0_10px_rgba(0,0,0,0.2)]">LOCAL RESIDENTS CROSSED FROM PAK TO IRAN : 123</div>
-              <div className="text-lg font-bold py-4 px-5 rounded-md border shadow-[0_0_10px_rgba(0,0,0,0.2)]">LOCAL RESIDENTS CROSSED FROM IRAN TO PAK : 123</div>
-              <div className="text-lg font-bold py-4 px-5 rounded-md border shadow-[0_0_10px_rgba(0,0,0,0.2)]">FUEL VEH - PAK TO IRAN : 123</div>
-              <div className="text-lg font-bold py-4 px-5 rounded-md border shadow-[0_0_10px_rgba(0,0,0,0.2)]">FUEL VEH - IRAN TO PAK : 123</div>
-            </div> */}
           </div>
           :
           active === 2 ?
@@ -398,6 +428,21 @@ const Page = () => {
                   <p className="mt-2">{selectedFile ? selectedFile : 'No file selected'} </p>
                 </div>
                 <button disabled={addBulkLoading} onClick={AddTradeXingData} className="py-3 w-[120px] mt-5 rounded-lg bg-primary text-white">{addBulkLoading ? <Loader height="h-4" width="w-4" /> : 'Submit'}</button>
+              </div>
+            </div>
+              :
+              active === 5 ?
+              <div>
+              <h1 className='text-2xl font-bold text-zinc-800'>UPLOAD UNIFIED DATA</h1>
+              <div className="mt-10">
+                <div>
+                  <label htmlFor="file" className="w-[300px] h-[70px] text-zinc-800 font-bold border-2 border-dashed rounded-2xl bg-zinc-100 flex justify-center items-center">
+                    Browse File
+                  </label>
+                  <input onChange={ReadExcelFile} type="file" id="file" hidden />
+                  <p className="mt-2">{selectedFile ? selectedFile : 'No file selected'} </p>
+                </div>
+                <button disabled={addBulkLoading} onClick={AddUnifiedData} className="py-3 w-[120px] mt-5 rounded-lg bg-primary text-white">{addBulkLoading ? <Loader height="h-4" width="w-4" /> : 'Submit'}</button>
               </div>
             </div>
                 :

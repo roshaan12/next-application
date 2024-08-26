@@ -14,6 +14,7 @@ import { HiOutlineArrowUpRight, HiOutlineArrowDownLeft } from "react-icons/hi2";
 import { FiLogOut } from 'react-icons/fi'
 import { TbReportSearch } from "react-icons/tb";
 import { ContextApi } from "@/context/context";
+import { BiTransfer } from 'react-icons/bi'; 
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -38,28 +39,42 @@ export default function RootLayout({
     let links = [
         { href: '/', text: 'Home', icon: <TiHome className="text-xl" /> },
         { href: '/tokendata', text: 'Token Data', icon: < MdToken className="text-xl" /> },
-        { href: '/paktoiran?type=local', text: 'Pak to Iran', icon: <HiOutlineArrowUpRight className="text-xl" /> },
-        { href: '/irantopak?type=local', text: 'Iran to Pak', icon: <HiOutlineArrowDownLeft className="text-xl" /> },
+        // { href: '/paktoiran?type=local', text: 'Pak to Iran', icon: <HiOutlineArrowUpRight className="text-xl" /> },
+        // { href: '/irantopak?type=local', text: 'Iran to Pak', icon: <HiOutlineArrowDownLeft className="text-xl" /> },
+        { href: '/chedgipedestrianxing', text: 'Chedgi Pedestrian Xing', icon: <BiTransfer  className="text-xl" /> },
+        { href: '/paragkohfuelxing', text: 'Paragkoh Fuel Xing', icon: <BiTransfer  className="text-xl" /> },
+        { href: '/chedgitradexing', text: 'Chedgi Trade Xing', icon: <BiTransfer  className="text-xl" /> } ,
         { href: '/status', text: 'Status', icon: <TbReportSearch className="text-xl" /> },
-        { href: '/manualentry', text: 'Manual Entry', icon: <MdFormatListBulletedAdd className="text-xl" /> } // Update href as needed
+        { href: '/manualentry', text: 'Manual Entry', icon: <MdFormatListBulletedAdd className="text-xl" /> },
+       
     ];
     if (state.userDetails && (state.userDetails.role === 'user-out-local' || state.userDetails.role === 'user-out-fuel-trade')) {
         links = [
             { href: '/tokendata', text: 'Token Data', icon: < MdToken className="text-xl" /> },
-            { href: `/paktoiran?type=${state.userDetails.role === 'user-out-local' ? 'local' : 'fuelTrade'}`, text: 'Pak to Iran', icon: <HiOutlineArrowUpRight className="text-xl" /> },
+            // { href: `/paktoiran?type=${state.userDetails.role === 'user-out-local' ? 'local' : 'fuelTrade'}`, text: 'Pak to Iran', icon: <HiOutlineArrowUpRight className="text-xl" /> },
+            { href: '/chedgipedestrianxing', text: 'Chedgi Pedestrian Xing', icon: <BiTransfer  className="text-xl" /> },
+            { href: '/paragkohfuelxing', text: 'Paragkoh Fuel Xing', icon: <BiTransfer  className="text-xl" /> },
+            { href: '/chedgitradexing', text: 'Chedgi Trade Xing', icon: <BiTransfer  className="text-xl" /> } ,
         ];
     }
     else if (state.userDetails && (state.userDetails.role === 'user-in-local' || state.userDetails.role === 'user-in-fuel-trade')) {
         links = [
             { href: '/tokendata', text: 'Token Data', icon: < MdToken className="text-xl" /> },
-            { href: `/irantopak?type=${state.userDetails.role === 'user-in-local' ? 'local' : 'fuelTrade'}`, text: 'Iran to Pak', icon: <HiOutlineArrowDownLeft className="text-xl" /> },
+            // { href: `/irantopak?type=${state.userDetails.role === 'user-in-local' ? 'local' : 'fuelTrade'}`, text: 'Iran to Pak', icon: <HiOutlineArrowDownLeft className="text-xl" /> },
+            { href: '/chedgipedestrianxing', text: 'Chedgi Pedestrian Xing', icon: <BiTransfer  className="text-xl" /> },
+        { href: '/paragkohfuelxing', text: 'Paragkoh Fuel Xing', icon: <BiTransfer  className="text-xl" /> },
+        { href: '/chedgitradexing', text: 'Chedgi Trade Xing', icon: <BiTransfer  className="text-xl" /> } ,
         ];
     }
     else if (state.userDetails && state.userDetails.role === 'user-in-out-local') {
         links = [
             { href: '/tokendata', text: 'Token Data', icon: < MdToken className="text-xl" /> },
-            { href: '/paktoiran?type=local', text: 'Pak to Iran', icon: <HiOutlineArrowUpRight className="text-xl" /> },
-            { href: '/irantopak?type=local', text: 'Iran to Pak', icon: <HiOutlineArrowDownLeft className="text-xl" /> },
+            // { href: '/paktoiran?type=local', text: 'Pak to Iran', icon: <HiOutlineArrowUpRight className="text-xl" /> },
+            // { href: '/irantopak?type=local', text: 'Iran to Pak', icon: <HiOutlineArrowDownLeft className="text-xl" /> },
+
+            { href: '/chedgipedestrianxing', text: 'Chedgi Pedestrian Xing', icon: <BiTransfer  className="text-xl" /> },
+        { href: '/paragkohfuelxing', text: 'Paragkoh Fuel Xing', icon: <BiTransfer  className="text-xl" /> },
+        { href: '/chedgitradexing', text: 'Chedgi Trade Xing', icon: <BiTransfer  className="text-xl" /> } ,
             { href: '/manualentry', text: 'Manual Entry', icon: <MdFormatListBulletedAdd className="text-xl" /> } // Update href as needed
         ];
     }
@@ -67,8 +82,11 @@ export default function RootLayout({
         links = [
             { href: '/', text: 'Home', icon: <TiHome className="text-xl" /> },
             { href: '/tokendata', text: 'Token Data', icon: < MdToken className="text-xl" /> },
-            { href: '/paktoiran?type=local', text: 'Pak to Iran', icon: <HiOutlineArrowUpRight className="text-xl" /> },
-            { href: '/irantopak?type=local', text: 'Iran to Pak', icon: <HiOutlineArrowDownLeft className="text-xl" /> },
+            // { href: '/paktoiran?type=local', text: 'Pak to Iran', icon: <HiOutlineArrowUpRight className="text-xl" /> },
+            // { href: '/irantopak?type=local', text: 'Iran to Pak', icon: <HiOutlineArrowDownLeft className="text-xl" /> },
+            { href: '/chedgipedestrianxing', text: 'Chedgi Pedestrian Xing', icon: <BiTransfer  className="text-xl" /> },
+        { href: '/paragkohfuelxing', text: 'Paragkoh Fuel Xing', icon: <BiTransfer  className="text-xl" /> },
+        { href: '/chedgitradexing', text: 'Chedgi Trade Xing', icon: <BiTransfer  className="text-xl" /> } ,
             { href: '/status', text: 'Status', icon: <TbReportSearch className="text-xl" /> },
             { href: '/manualentry', text: 'Manual Entry', icon: <MdFormatListBulletedAdd className="text-xl" /> } // Update href as needed
         ];
