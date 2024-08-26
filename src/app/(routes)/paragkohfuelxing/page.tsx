@@ -17,19 +17,15 @@ function ParagkohFuelXing() {
         return () => clearTimeout(timer);
     }, []);
 
-    const isClient = typeof window !== "undefined";
-
-    // Conditions to show Pak to Iran card
     const shouldShowPakToIran = !userDetails.role || 
                                 userDetails.role === 'user-in-fuel-trade' || 
-                                userDetails.role === 'user-in-out-fuel-trade' || 
+                                userDetails.role === 'user-in-out-local' || 
                                 userDetails.role === 'admin' || 
                                 userDetails.role === 'super-admin';
 
-    // Conditions to show Iran to Pak card
     const shouldShowIranToPak = !userDetails.role || 
                                 userDetails.role === 'user-out-fuel-trade' || 
-                                userDetails.role === 'user-in-out-fuel-trade' || 
+                                userDetails.role === 'user-in-out-local' || 
                                 userDetails.role === 'admin' || 
                                 userDetails.role === 'super-admin';
 
@@ -39,10 +35,6 @@ function ParagkohFuelXing() {
                 <Loader height='h-6' width='w-6' />
             </div>
         );
-    }
-
-    if (!isClient) {
-        return null;  // Prevents SSR from rendering anything that depends on 'window'
     }
 
     return (

@@ -6,7 +6,7 @@ import { ContextApi } from "@/context/context";
 
 function ChedgiPedestrianXing() {
     const { state } = useContext(ContextApi);
-    const userDetails = state?.userDetails || {}; 
+    const userDetails = state?.userDetails || {}; // Fallback to an empty object if userDetails is null or undefined
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -17,16 +17,15 @@ function ChedgiPedestrianXing() {
         return () => clearTimeout(timer);
     }, []);
 
-    const isClient = typeof window !== "undefined";
+    console.log(userDetails.role);
 
-    // Conditions to show Pak to Iran card
     const shouldShowPakToIran = !userDetails.role || 
                                 userDetails.role === 'user-in-local' || 
                                 userDetails.role === 'user-in-out-local' || 
                                 userDetails.role === 'admin' || 
                                 userDetails.role === 'super-admin';
 
-    // Conditions to show Iran to Pak card
+
     const shouldShowIranToPak = !userDetails.role || 
                                 userDetails.role === 'user-out-local' || 
                                 userDetails.role === 'user-in-out-local' || 
@@ -39,10 +38,6 @@ function ChedgiPedestrianXing() {
                 <Loader height='h-6' width='w-6' />
             </div>
         );
-    }
-
-    if (!isClient) {
-        return null;  // Prevents SSR from rendering anything that depends on 'window'
     }
 
     return (
