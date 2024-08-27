@@ -57,6 +57,7 @@ function TokenData() {
             console.log(data.data);
         }
         catch (err: any) {
+            if (typeof window !== 'undefined') {
             toast.error(err.message, {
                 duration: 4000,
                 position: window.matchMedia("(min-width: 600px)").matches ? "bottom-right" : "bottom-center",
@@ -68,6 +69,7 @@ function TokenData() {
                     fontWeight: 'bold'
                 },
             });
+        }
         }
         finally {
             setLoading(false)
@@ -89,6 +91,7 @@ function TokenData() {
             if (data.status === 'error') {
                 throw new Error(data.message)
             }
+            if (typeof window !== 'undefined') {
             toast.success(data.message, {
                 duration: 3000,
                 position: window.matchMedia("(min-width: 600px)").matches ? "bottom-right" : "bottom-center",
@@ -100,9 +103,11 @@ function TokenData() {
                     fontWeight: 'bold'
                 },
             });
+        }
             fetchData()
         }
         catch (err: any) {
+            if (typeof window !== 'undefined') {
             toast.error(err.message, {
                 duration: 4000,
                 position: window.matchMedia("(min-width: 600px)").matches ? "bottom-right" : "bottom-center",
@@ -114,6 +119,7 @@ function TokenData() {
                     fontWeight: 'bold'
                 },
             });
+        }
         }
         finally {
             setDeleteTokenId('')
@@ -247,7 +253,8 @@ function TokenData() {
                                         </div>
                                     </div>
                                     <div className='flex justify-end pt-5 border-t mt-5 print:hidden'>
-                                        <button onClick={() => window.print()} className='w-[120px] py-3 font-semibold bg-primary text-white rounded-md'>Print</button>
+                                        
+                                        <button onClick={() => typeof window !== 'undefined' ?? window.print()} className='w-[120px] py-3 font-semibold bg-primary text-white rounded-md'>Print</button>
                                     </div>
                                 </div>
                             </DialogDescription>

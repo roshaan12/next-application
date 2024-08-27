@@ -51,6 +51,7 @@ const Page = () => {
             setFetchedData(data.data)
         }
         catch (err: any) {
+            if (typeof window !== 'undefined') {
             toast.error(err.message, {
                 duration: 4000,
                 position: window.matchMedia("(min-width: 600px)").matches ? "bottom-right" : "bottom-center",
@@ -62,6 +63,7 @@ const Page = () => {
                     fontWeight: 'bold'
                 },
             });
+        }
         }
         finally {
             setLoading(false)

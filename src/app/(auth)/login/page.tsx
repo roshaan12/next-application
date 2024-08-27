@@ -56,8 +56,10 @@ export default function Login() {
       }
     } catch (err: any) {
       setLoading(false);
+      if (typeof window !== 'undefined') {
       toast.error(err.message, {
         duration: 3000,
+
         position: window.matchMedia("(min-width: 600px)").matches
           ? "bottom-right"
           : "bottom-center",
@@ -71,6 +73,7 @@ export default function Login() {
           fontWeight: "bold",
         },
       });
+    }
     }
   }
 

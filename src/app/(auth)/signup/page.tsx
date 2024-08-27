@@ -39,7 +39,8 @@ function SignUp() {
             if (resData.status === 'error') {
                 throw new Error(resData.message)
             }
-            if (resData.status === 'success') {
+            
+            if (typeof window !== 'undefined' && resData.status === 'success') {
                 toast.success(`${resData.message}`, {
                     duration: 2000,
                     position: window.matchMedia("(min-width: 600px)").matches ? "bottom-right" : "bottom-center",
@@ -55,6 +56,7 @@ function SignUp() {
             // console.log(resData);
         }
         catch (err: any) {
+            if(typeof window !== 'undefined'){
             toast.error(err.message, {
                 duration: 4000,
                 position: window.matchMedia("(min-width: 600px)").matches ? "bottom-right" : "bottom-center",
@@ -66,6 +68,7 @@ function SignUp() {
                     fontWeight: 'bold'
                 },
             });
+        }
         }
     }
 

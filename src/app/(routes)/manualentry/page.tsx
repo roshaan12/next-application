@@ -71,6 +71,7 @@ function ManualEntry() {
                 throw new Error(resData.message)
             }
             if (resData.status === 'success') {
+                if (typeof window !== 'undefined') {
                 toast.success(`${resData.message}`, {
                     duration: 2000,
                     position: window.matchMedia("(min-width: 600px)").matches ? "bottom-right" : "bottom-center",
@@ -83,9 +84,11 @@ function ManualEntry() {
                     },
                 });
             }
+            }
             reset()
         }
         catch (err: any) {
+            if (typeof window !== 'undefined') {
             toast.error(err.message, {
                 duration: 4000,
                 position: window.matchMedia("(min-width: 600px)").matches ? "bottom-right" : "bottom-center",
@@ -97,6 +100,7 @@ function ManualEntry() {
                     fontWeight: 'bold'
                 },
             });
+        }
         }
         finally {
             setLoading(false)
