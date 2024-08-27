@@ -1,3 +1,4 @@
+'user client'
 import { ITokenSchema, tokenSchema } from "@/utils/zodschema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
