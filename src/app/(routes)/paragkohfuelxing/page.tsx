@@ -1,7 +1,6 @@
 'use client'
 import React, { useState, useEffect, useContext } from 'react';
 import Link from 'next/link';
-import dynamic from 'next/dynamic';
 import { Loader } from '@/components/common';
 import { ContextApi } from "@/context/context";
 
@@ -59,5 +58,4 @@ function ParagkohFuelXing() {
     );
 }
 
-// Dynamically import the component with SSR disabled
-export default dynamic(() => Promise.resolve(ParagkohFuelXing), { ssr: false });
+export default ParagkohFuelXing;
